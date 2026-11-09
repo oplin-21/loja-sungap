@@ -21,7 +21,7 @@ export function htmlParaMarkdown(html: string | null | undefined): string {
   s = s.replace(/<[^>]+>/g, '');
   s = s.replace(/&[a-z#0-9]+;/gi, (e) => ENTIDADES[e.toLowerCase()] ?? (e.startsWith('&#') ? String.fromCharCode(Number(e.slice(2, -1)) || 32) : ' '));
   s = s.replace(/\*\*\s*\*\*/g, '');
-  s = s.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+  s = s.replace(/[ \t]+\n/g, '\n').replace(/\n[ \t]+/g, '\n').replace(/\n{3,}/g, '\n\n');
   return s.trim();
 }
 
