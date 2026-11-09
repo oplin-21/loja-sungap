@@ -60,7 +60,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
 ---
 
 <AdminLayout title={`Edit ${product.name}`} active="products">
-  <a href="/admin/products" class="text-sm text-gray-500 hover:text-brand">&larr; Back to products</a>
+  <a href="/admin/products" class="text-sm text-gray-500 hover:text-brand">&larr; Voltar aos produtos</a>
   <div class="mt-4 mb-6 flex items-center justify-between gap-4">
     <h1 class="text-2xl font-bold">Editar produto</h1>
     <a
@@ -272,7 +272,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
         [...variants, null].map((v) => (
           <div data-variant-row data-blank={v ? undefined : ''} class="flex flex-wrap items-end gap-3 border-b border-line pb-3">
             <input form="product-form" type="hidden" name="v_id" value={v?.public_id ?? ''} />
-            {/* Photo (left): a thumbnail button that opens a palette of gallery
+            {/* Foto (esquerda): a thumbnail button that opens a palette of gallery
                 images. The hidden field carries the chosen id (array-aligned). */}
             {(() => {
               const sel = v?.image_id ? imageById.get(v.image_id) : null;

@@ -31,9 +31,9 @@ const inputClass =
 
   <div>
     <label class="block text-sm font-medium" for="slug">
-      Endereço da página <span class="text-faint">(URL — blank to auto-generate from name)</span>
+      Endereço da página <span class="text-faint">(em branco: gerado a partir do nome)</span>
     </label>
-    <input id="slug" name="slug" type="text" value={category?.slug ?? ''} placeholder="auto-from-name" class={inputClass} />
+    <input id="slug" name="slug" type="text" value={category?.slug ?? ''} placeholder="gerado automaticamente" class={inputClass} />
   </div>
 
   <div>

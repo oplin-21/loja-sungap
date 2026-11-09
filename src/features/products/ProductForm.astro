@@ -73,14 +73,14 @@ const inputClass =
 
   <div>
     <label class="block text-sm font-medium" for="slug">
-      Endereço da página <span class="text-faint">(URL — blank to auto-generate from name)</span>
+      Endereço da página <span class="text-faint">(em branco: gerado a partir do nome)</span>
     </label>
     <input
       id="slug"
       name="slug"
       type="text"
       value={product?.slug ?? ''}
-      placeholder="auto-from-name"
+      placeholder="gerado automaticamente"
       class={inputClass}
     />
   </div>
@@ -94,7 +94,7 @@ const inputClass =
 
   <div class="grid grid-cols-2 gap-4">
     <div>
-      <label class="block text-sm font-medium" for="price">Price (USD)</label>
+      <label class="block text-sm font-medium" for="price">Preço (R$)</label>
       <input id="price" name="price" type="number" step={priceStep} min="0" required value={price} class={inputClass} />
     </div>
     <div>
@@ -118,7 +118,7 @@ const inputClass =
       Desmarque para produtos digitais (e-books, vales-presente). Eles não entram no peso do envio.
     </p>
     <div class="mt-3">
-      <label class="block text-sm font-medium" for="weight">Weight ({weightUnit})</label>
+      <label class="block text-sm font-medium" for="weight">Peso ({weightUnit})</label>
       <input
         id="weight"
         name="weight"
@@ -131,7 +131,7 @@ const inputClass =
         Peso do item embalado, sem a embalagem geral definida em Frete.
         {weightRequired
           ? ' Required: every shipping zone prices by weight, so this product cannot be sold without it.'
-          : ' Optional while a flat rate is available.'}
+          : ' Opcional enquanto houver tarifa fixa.'}
       </p>
     </div>
   </fieldset>}
@@ -156,7 +156,7 @@ const inputClass =
     {product?.file_key && (
       <label class="mt-3 flex items-center gap-2 text-sm">
         <input type="checkbox" name="remove_deliverable" class="h-4 w-4" />
-        Remove attachment from future purchases
+        Remover o anexo das próximas compras
       </label>
     )}
   </fieldset>
