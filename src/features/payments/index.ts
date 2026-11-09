@@ -7,6 +7,7 @@ import { createLightningProvider } from './lightning-provider';
 import { getLightningBackend } from './lightning';
 import { createOpenNodeProvider } from './opennode';
 import { createDemoProvider } from './demo';
+import { createInfinitePayProvider } from './infinitepay';
 import { getSecret, vaultReady } from '../secrets/store';
 
 export type { PaymentProvider } from './provider';
@@ -19,14 +20,16 @@ export { DEMO_CHECKOUT_TTL_SECONDS } from './demo';
 
 // 'demo' is a first-class method — a simulated checkout that's ALWAYS offered
 // (records a real, demo-tagged order). The real rails work only when configured.
-export type PaymentMethod = 'stripe' | 'lightning' | 'opennode' | 'demo';
-const ALL_METHODS: PaymentMethod[] = ['stripe', 'lightning', 'opennode'];
+export type PaymentMethod = 'stripe' | 'lightning' | 'opennode' | 'infinitepay' | 'demo';
+const ALL_METHODS: PaymentMethod[] = ['infinitepay', 'stripe', 'lightning', 'opennode'];
 // The buttons always presented at checkout. Each real rail works if configured,
 // else its button leads to setup instructions; demo always works.
-const OFFERED: PaymentMethod[] = ['stripe', 'lightning', 'demo'];
+const OFFERED: PaymentMethod[] = ['infinitepay', 'demo'];
 
 export function isPaymentMethod(value: string): value is PaymentMethod {
-  return value === 'stripe' || value === 'lightning' || value === 'opennode' || value === 'demo';
+  return (
+    value === 'stripe' || value === 'lightning' || value === 'opennode' || value === 'infinitepay' || value === 'demo'
+  );
 }
 
 /**
@@ -47,6 +50,8 @@ export function isMethodAvailable(
       return has('stripe_secret_key') && has('stripe_webhook_secret');
     case 'opennode':
       return has('opennode_api_key');
+    case 'infinitepay':
+      return !!settings.infinitepayHandle;
     case 'lightning':
       return settings.lightningBackend === 'lnbits'
         ? !!settings.lnbitsUrl && has('lnbits_api_key')
@@ -109,7 +114,7 @@ export function offeredMethods(
   const extra = ALL_METHODS.filter(
     (m) => !OFFERED.includes(m) && isMethodAvailable(m, settings, vault),
   );
-  return (['stripe', 'lightning', ...extra, 'demo'] as PaymentMethod[]).filter((m) => !off.has(m));
+  return (['infinitepay', ...extra, 'demo'] as PaymentMethod[]).filter((m) => !off.has(m));
 }
 
 /**
@@ -131,6 +136,10 @@ export async function getPaymentProvider(method?: PaymentMethod): Promise<Paymen
       const key = await getSecret(env.DB, 'opennode_api_key');
       if (!key) throw new Error('OpenNode is not configured.');
       return createOpenNodeProvider(env.DB, key, settings.opennodeApiUrl ?? undefined);
+    }
+    case 'infinitepay': {
+      if (!settings.infinitepayHandle) throw new Error('InfinitePay não está configurada.');
+      return createInfinitePayProvider(env.DB, settings.infinitepayHandle);
     }
     case 'stripe':
     default: {

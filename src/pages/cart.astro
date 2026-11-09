@@ -27,7 +27,8 @@ const METHOD: Record<string, { label: string; hint: string; setupHint: string }>
   stripe: { label: 'Pagar com cartão', hint: 'Visa, Mastercard, Apple Pay & more', setupHint: 'Configurar pagamento com cartão' },
   lightning: { label: 'Pagar com Lightning ⚡', hint: 'Instant — from any Lightning wallet', setupHint: 'Configurar Lightning' },
   opennode: { label: 'Pagar com Bitcoin', hint: 'On-chain or Lightning (OpenNode)', setupHint: 'Configurar OpenNode' },
-  demo: { label: 'Pagamento de demonstração', hint: 'Simulated — places a real test order, no charge', setupHint: '' },
+  infinitepay: { label: 'Finalizar compra', hint: 'Pix sem taxa ou cartão em até 12x', setupHint: '' },
+  demo: { label: 'Pagamento de demonstração', hint: 'Simulado — cria um pedido de teste, sem cobrança', setupHint: '' },
 };
 
 const cart = readCart(Astro.cookies);

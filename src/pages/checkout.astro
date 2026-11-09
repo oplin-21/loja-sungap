@@ -29,6 +29,15 @@ import {
 } from '../features/orders/reservations';
 import { reservationItems } from '../features/orders/reservationItems.ts';
 import { purgeStockProductCache } from '../features/cache/purge';
+import {
+  UFS,
+  documentoValido,
+  formataDocumento,
+  cepValido,
+  formataCep,
+  telefoneValido,
+  ufValida,
+} from '../features/br/documento';
 
 const cfg = getConfig();
 const isPost = Astro.request.method === 'POST';
@@ -46,12 +55,12 @@ const fld = (name: string) => (form?.get(name) ?? '').toString().trim();
  * The rail arrives as a query param on the first hop and as a hidden field across
  * the address → shipping steps (the forms post to a bare /checkout).
  */
-const IN_APP_RAILS = ['lightning', 'opennode', 'demo'] as const;
+const IN_APP_RAILS = ['infinitepay', 'lightning', 'opennode', 'demo'] as const;
 type InAppRail = (typeof IN_APP_RAILS)[number];
 const requestedRail = (fld('method') || Astro.url.searchParams.get('method') || '').trim();
 const rail: InAppRail = (IN_APP_RAILS as readonly string[]).includes(requestedRail)
   ? (requestedRail as InAppRail)
-  : 'lightning';
+  : 'infinitepay';
 if (!Astro.locals.settings || !isMethodAvailable(rail, Astro.locals.settings))
   return Astro.redirect('/cart', 303);
 
@@ -159,6 +168,7 @@ const editAddressHref = (() => {
   return `/checkout?${params}`;
 })();
 const RAIL_LABEL: Record<InAppRail, string> = {
+  infinitepay: 'Ir para o pagamento (Pix ou cartão)',
   lightning: 'Pagar com Lightning',
   opennode: 'Pagar com Bitcoin',
   demo: 'Fazer pedido de demonstração',
@@ -174,24 +184,33 @@ const RAIL_LABEL: Record<InAppRail, string> = {
  */
 const DEMO_ADDRESS = {
   email: 'demo@example.com',
-  name: 'Demo Shopper',
-  line1: '123 Example Street',
+  name: 'Cliente Demonstração',
+  phone: '(11) 99999-0000',
+  document: '529.982.247-25',
+  line1: 'Avenida Paulista',
+  number: '1000',
   line2: '',
-  city: 'Springfield',
-  state: '',
-  postal: '12345',
-  country: (geoDefault || knownCountries[0] || 'US').toUpperCase(),
+  district: 'Bela Vista',
+  city: 'São Paulo',
+  state: 'SP',
+  postal: '01310-100',
+  country: 'BR',
 };
 const prefill = rail === 'demo' && !isPost ? DEMO_ADDRESS : null;
 const addr = {
   email: fld('email') || (prefill?.email ?? ''),
   name: fld('name') || (prefill?.name ?? ''),
+  phone: fld('phone') || (prefill?.phone ?? ''),
+  document: fld('document') || (prefill?.document ?? ''),
   line1: fld('line1') || (prefill?.line1 ?? ''),
+  number: fld('number') || (prefill?.number ?? ''),
   line2: fld('line2') || (prefill?.line2 ?? ''),
+  district: fld('district') || (prefill?.district ?? ''),
   city: fld('city') || (prefill?.city ?? ''),
-  state: fld('state') || (prefill?.state ?? ''),
+  state: (fld('state') || (prefill?.state ?? '')).toUpperCase(),
   postal: fld('postal') || (prefill?.postal ?? ''),
-  country: (fld('country') || prefill?.country || geoDefault || knownCountries[0] || 'US').toUpperCase(),
+  // Loja brasileira: entrega só no Brasil.
+  country: 'BR',
 };
 
 let stage: 'address' | 'shipping' = 'address';
@@ -201,12 +220,16 @@ const errors: string[] = [];
 // Demo submits itself: the sample address on the first GET, no typing.
 const submitted = isPost || rail === 'demo';
 if (submitted) {
-  if (!/.+@.+\..+/.test(addr.email)) errors.push('A valid email is required.');
-  if (!addr.name) errors.push('Informe o nome.');
-  if (!addr.line1) errors.push('Informe o endereço.');
+  if (!/.+@.+\..+/.test(addr.email)) errors.push('Informe um e-mail válido.');
+  if (!addr.name) errors.push('Informe o nome completo ou a razão social.');
+  if (!telefoneValido(addr.phone)) errors.push('Informe o telefone com DDD.');
+  if (!documentoValido(addr.document)) errors.push('CPF ou CNPJ inválido.');
+  if (!cepValido(addr.postal)) errors.push('Informe um CEP com 8 dígitos.');
+  if (!addr.line1) errors.push('Informe a rua.');
+  if (!addr.number) errors.push('Informe o número (use "s/n" se não houver).');
+  if (!addr.district) errors.push('Informe o bairro.');
   if (!addr.city) errors.push('Informe a cidade.');
-  if (!addr.postal) errors.push('Informe o CEP.');
-  if (addr.country.length !== 2) errors.push('Use a sigla do país com 2 letras (ex.: BR).');
+  if (!ufValida(addr.state)) errors.push('Escolha o estado.');
 
   if (errors.length === 0) {
     const quote = quoteShipping(effectiveShipping, {
@@ -238,7 +261,7 @@ if (submitted) {
       } else if (overweight) {
         errors.push('Este pedido é pesado demais para os fretes disponíveis.');
       } else {
-        errors.push(`Sorry, we don't ship to ${addr.country} yet.`);
+        errors.push('Ainda não entregamos neste endereço. Fale com a gente pelo WhatsApp.');
       }
     } else {
       stage = 'shipping';
@@ -259,7 +282,9 @@ if (submitted) {
           const reservationTtl =
             rail === 'demo'
               ? DEMO_CHECKOUT_TTL_SECONDS
-              : cfg.payments.lightning.invoiceExpiryMinutes * 60 + 5 * 60;
+              : rail === 'infinitepay'
+                ? 60 * 60 + 5 * 60
+                : cfg.payments.lightning.invoiceExpiryMinutes * 60 + 5 * 60;
           const reserved = await reserveInventory(
             env.DB,
             publicId,
@@ -278,8 +303,13 @@ if (submitted) {
               line2: addr.line2 || null,
               city: addr.city,
               state: addr.state || null,
-              postal: addr.postal,
+              postal: formataCep(addr.postal),
               country: addr.country,
+              // Campos brasileiros, no mesmo retrato do endereço: a nota fiscal precisa deles.
+              number: addr.number,
+              district: addr.district,
+              document: formataDocumento(addr.document),
+              phone: addr.phone,
             };
             const itemsJson = JSON.stringify(
               lines.map((l) => ({ id: l.product.id, v: l.variantId, q: l.qty, n: l.name, p: l.unitPriceCents })),
@@ -347,8 +377,8 @@ if (submitted) {
               );
               errors.push(
                 rail === 'lightning'
-                  ? 'Lightning is temporarily unavailable. Please try again in a moment, or choose another payment method.'
-                  : 'That payment method is temporarily unavailable. Please try again in a moment, or choose another.',
+                  ? 'Lightning indisponível no momento. Tente de novo em instantes.'
+                  : 'O pagamento está indisponível no momento. Tente de novo em instantes.',
               );
             }
           }
@@ -369,15 +399,15 @@ const hasErrors = errors.length > 0;
         <div class="mb-6 rounded-lg border-2 border-amber-400 bg-amber-50 px-4 py-4 text-center text-amber-900">
           <p class="text-base font-bold uppercase tracking-wide">⚠️ Pagamento de demonstração — não é um pagamento real</p>
           <p class="mt-1 text-sm">
-            No card is charged. Completing it places a real order tagged
-            <code class="rounded bg-amber-100 px-1">demo</code> so you can see the full flow.
+            Nada é cobrado. Concluir cria um pedido real marcado como
+            <code class="rounded bg-amber-100 px-1">demo</code> para você ver o fluxo completo.
           </p>
         </div>
       )
     }
     <h1 class="mb-1 font-serif text-3xl tracking-tight sm:text-4xl">Finalizar compra</h1>
     <p class="mb-6 text-sm text-muted">
-      Subtotal {formatPrice(subtotalCents, currency)} · {lines.length} item{lines.length === 1 ? '' : 's'}
+      Subtotal {formatPrice(subtotalCents, currency)} · {lines.length} {lines.length === 1 ? 'item' : 'itens'}
     </p>
 
     {
@@ -401,8 +431,12 @@ const hasErrors = errors.length > 0;
           ))}
           <input type="hidden" name="email" value={addr.email} />
           <input type="hidden" name="name" value={addr.name} />
+          <input type="hidden" name="phone" value={addr.phone} />
+          <input type="hidden" name="document" value={addr.document} />
           <input type="hidden" name="line1" value={addr.line1} />
+          <input type="hidden" name="number" value={addr.number} />
           <input type="hidden" name="line2" value={addr.line2} />
+          <input type="hidden" name="district" value={addr.district} />
           <input type="hidden" name="city" value={addr.city} />
           <input type="hidden" name="state" value={addr.state} />
           <input type="hidden" name="postal" value={addr.postal} />
@@ -411,8 +445,10 @@ const hasErrors = errors.length > 0;
           <div class="rounded-lg border border-line bg-surface p-4 text-sm">
             <div class="mb-1 font-medium">Entregar em</div>
             <div class="text-muted">
-              {addr.name}, {addr.line1}
-              {addr.line2 ? `, ${addr.line2}` : ''}, {addr.city} {addr.state} {addr.postal}, {addr.country}
+              {addr.name} · {formataDocumento(addr.document)}<br />
+              {addr.line1}, {addr.number}
+              {addr.line2 ? ` — ${addr.line2}` : ''} · {addr.district}<br />
+              {addr.city}/{addr.state} · CEP {formataCep(addr.postal)}
             </div>
             <a href={editAddressHref} class="mt-2 inline-block text-xs font-medium text-accent">
               Editar endereço
@@ -428,7 +464,7 @@ const hasErrors = errors.length > 0;
                   {o.label}
                 </span>
                 <span class="text-muted">
-                  {o.amountCents === 0 ? 'Free' : formatPrice(o.amountCents, currency)} · total{' '}
+                  {o.amountCents === 0 ? 'Grátis' : formatPrice(o.amountCents, currency)} · total{' '}
                   {formatPrice(subtotalCents + o.amountCents, currency)}
                 </span>
               </label>
@@ -450,66 +486,65 @@ const hasErrors = errors.length > 0;
           {carryExtraIds.map((id) => (
             <input type="hidden" name="extra" value={id} />
           ))}
+          <input type="hidden" name="country" value="BR" />
           <label class="block text-sm">
             <span class="mb-1 block font-medium">E-mail</span>
-            <input
-              type="email"
-              name="email"
-              value={addr.email}
-              required
-              class="w-full rounded-md border border-line px-3 py-2"
-            />
+            <input type="email" name="email" value={addr.email} required autocomplete="email" class="w-full rounded-md border border-line px-3 py-2" />
           </label>
           <label class="block text-sm">
-            <span class="mb-1 block font-medium">Nome completo</span>
-            <input type="text" name="name" value={addr.name} required class="w-full rounded-md border border-line px-3 py-2" />
-          </label>
-          <label class="block text-sm">
-            <span class="mb-1 block font-medium">Endereço</span>
-            <input type="text" name="line1" value={addr.line1} required class="w-full rounded-md border border-line px-3 py-2" />
-          </label>
-          <label class="block text-sm">
-            <span class="mb-1 block font-medium">Complemento (opcional)</span>
-            <input type="text" name="line2" value={addr.line2} class="w-full rounded-md border border-line px-3 py-2" />
+            <span class="mb-1 block font-medium">Nome completo ou razão social</span>
+            <input type="text" name="name" value={addr.name} required autocomplete="name" class="w-full rounded-md border border-line px-3 py-2" />
           </label>
           <div class="grid grid-cols-2 gap-3">
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">Cidade</span>
-              <input type="text" name="city" value={addr.city} required class="w-full rounded-md border border-line px-3 py-2" />
+              <span class="mb-1 block font-medium">CPF ou CNPJ</span>
+              <input type="text" name="document" value={addr.document} required inputmode="numeric" maxlength="18" class="w-full rounded-md border border-line px-3 py-2" />
             </label>
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">Estado (UF)</span>
-              <input type="text" name="state" value={addr.state} class="w-full rounded-md border border-line px-3 py-2" />
+              <span class="mb-1 block font-medium">Telefone com DDD</span>
+              <input type="tel" name="phone" value={addr.phone} required autocomplete="tel" inputmode="tel" class="w-full rounded-md border border-line px-3 py-2" />
             </label>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <label class="block text-sm">
               <span class="mb-1 block font-medium">CEP</span>
-              <input type="text" name="postal" value={addr.postal} required class="w-full rounded-md border border-line px-3 py-2" />
+              <input type="text" name="postal" value={addr.postal} required inputmode="numeric" maxlength="9" autocomplete="postal-code" data-cep class="w-full rounded-md border border-line px-3 py-2" />
+            </label>
+            <p class="self-end pb-2 text-xs text-faint" data-cep-status></p>
+          </div>
+          <label class="block text-sm">
+            <span class="mb-1 block font-medium">Rua</span>
+            <input type="text" name="line1" value={addr.line1} required autocomplete="address-line1" data-cep-rua class="w-full rounded-md border border-line px-3 py-2" />
+          </label>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="block text-sm">
+              <span class="mb-1 block font-medium">Número</span>
+              <input type="text" name="number" value={addr.number} required class="w-full rounded-md border border-line px-3 py-2" />
+            </label>
+            <label class="col-span-2 block text-sm">
+              <span class="mb-1 block font-medium">Complemento (opcional)</span>
+              <input type="text" name="line2" value={addr.line2} autocomplete="address-line2" class="w-full rounded-md border border-line px-3 py-2" />
+            </label>
+          </div>
+          <label class="block text-sm">
+            <span class="mb-1 block font-medium">Bairro</span>
+            <input type="text" name="district" value={addr.district} required data-cep-bairro class="w-full rounded-md border border-line px-3 py-2" />
+          </label>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="col-span-2 block text-sm">
+              <span class="mb-1 block font-medium">Cidade</span>
+              <input type="text" name="city" value={addr.city} required autocomplete="address-level2" data-cep-cidade class="w-full rounded-md border border-line px-3 py-2" />
             </label>
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">País</span>
-              {/* A select, not a code field: shoppers should not need to know ISO
-                  codes. Native type-ahead finds a country by typing its name; the
-                  value stays the alpha-2 code the calculator expects. */}
-              <select
-                name="country"
-                required
-                class="w-full rounded-md border border-line px-3 py-2 bg-surface"
-              >
-                {destinationChoices.map((c) => (
-                  <option value={c.code} selected={c.code === addr.country}>
-                    {c.name}
-                  </option>
+              <span class="mb-1 block font-medium">Estado</span>
+              <select name="state" required data-cep-uf class="w-full rounded-md border border-line bg-surface px-3 py-2">
+                <option value="">UF</option>
+                {UFS.map((uf) => (
+                  <option value={uf} selected={uf === addr.state}>{uf}</option>
                 ))}
               </select>
             </label>
           </div>
-          {
-            knownCountries.length > 0 && (
-              <p class="text-xs text-faint">Entrega em: {knownCountries.join(', ')}</p>
-            )
-          }
           <button
             type="submit"
             class="w-full rounded-md bg-brand px-4 py-2.5 font-medium text-on-brand hover:bg-brand-hover"
@@ -520,4 +555,34 @@ const hasErrors = errors.length > 0;
       )
     }
   </div>
+  <script>
+    // Preenche rua, bairro, cidade e estado a partir do CEP (ViaCEP). Só ajuda:
+    // sem JavaScript o formulário continua funcionando.
+    const cep = document.querySelector<HTMLInputElement>('[data-cep]');
+    const status = document.querySelector<HTMLElement>('[data-cep-status]');
+    const preenche = (sel: string, v: string) => {
+      const el = document.querySelector<HTMLInputElement | HTMLSelectElement>(sel);
+      if (el && v && !el.value) el.value = v;
+    };
+    let ultimo = '';
+    cep?.addEventListener('input', async () => {
+      const d = cep.value.replace(/\D+/g, '');
+      if (d.length !== 8 || d === ultimo) return;
+      ultimo = d;
+      if (status) status.textContent = 'Buscando endereço…';
+      try {
+        const r = await fetch(`https://viacep.com.br/ws/${d}/json/`);
+        const j = await r.json();
+        if (j.erro) throw new Error('cep');
+        preenche('[data-cep-rua]', j.logradouro);
+        preenche('[data-cep-bairro]', j.bairro);
+        preenche('[data-cep-cidade]', j.localidade);
+        preenche('[data-cep-uf]', j.uf);
+        if (status) status.textContent = '';
+        document.querySelector<HTMLInputElement>('input[name="number"]')?.focus();
+      } catch {
+        if (status) status.textContent = 'CEP não encontrado — preencha à mão.';
+      }
+    });
+  </script>
 </Layout>

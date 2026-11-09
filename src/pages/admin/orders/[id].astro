@@ -42,6 +42,7 @@ const PAYMENT_LABELS: Record<string, string> = {
   stripe: 'Card (Stripe)',
   lightning: 'Lightning',
   opennode: 'Bitcoin (OpenNode)',
+  infinitepay: 'InfinitePay (Pix ou cartão)',
   demo: 'Demo (no charge)',
 };
 const paymentLabel = order.payment_method
@@ -135,6 +136,10 @@ const ship = order.ship_address
       state: string | null;
       postal: string | null;
       country: string | null;
+      number?: string | null;
+      district?: string | null;
+      document?: string | null;
+      phone?: string | null;
     })
   : null;
 // Domestic-only for now: international labels need a customs declaration this
@@ -251,10 +256,13 @@ const willEmailCustomer =
           <dd class="whitespace-pre-line">
             {[
               ship.name,
-              ship.line1,
+              ship.document ? `CPF/CNPJ: ${ship.document}` : null,
+              ship.phone ? `Telefone: ${ship.phone}` : null,
+              [ship.line1, ship.number].filter(Boolean).join(', '),
               ship.line2,
-              [ship.city, ship.state, ship.postal].filter(Boolean).join(', '),
-              ship.country,
+              ship.district,
+              [ship.city, ship.state].filter(Boolean).join('/') + (ship.postal ? ` · CEP ${ship.postal}` : ''),
+              ship.country && ship.country !== 'BR' ? ship.country : null,
             ]
               .filter(Boolean)
               .join('\n')}

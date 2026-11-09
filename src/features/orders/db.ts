@@ -13,6 +13,11 @@ export interface ShippingAddress {
   state: string | null;
   postal: string | null;
   country: string | null;
+  /** Campos brasileiros (opcionais): número, bairro, CPF/CNPJ e telefone. */
+  number?: string | null;
+  district?: string | null;
+  document?: string | null;
+  phone?: string | null;
 }
 
 export interface Order {

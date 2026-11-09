@@ -53,6 +53,7 @@ export type SettingKey =
   | 'lnbits_url' // LNbits node URL (the invoice/read key is in the vault)
   | 'phoenixd_url' // phoenixd node URL (the password is in the vault)
   | 'opennode_api_url' // OpenNode API base override (testnet); absent = live default
+  | 'infinitepay_handle' // InfiniteTag da conta InfinitePay que recebe; absent = InfinitePay desligada
   | `enc:${string}`; // AES-GCM-encrypted secret (see features/secrets/store.ts), e.g. 'enc:stripe_secret_key'. Never loaded as plaintext into locals.
 
 /** The storefront features that can be flipped at runtime (default on). */
@@ -121,7 +122,7 @@ export interface StoreSettings {
   /** Turnstile public sitekey, or null. (The secret lives in the vault.) */
   turnstileSiteKey: string | null;
   /** Default payment rail (Settings → Payments). Default 'stripe'. */
-  paymentProvider: 'stripe' | 'lightning' | 'opennode' | 'demo';
+  paymentProvider: 'stripe' | 'lightning' | 'opennode' | 'infinitepay' | 'demo';
   /** Self-hosted Lightning node (when provider/rail is lightning). Default 'phoenixd'. */
   lightningBackend: 'phoenixd' | 'lnbits';
   /** Lightning node URLs, or null. (The key/password live in the vault.) */
@@ -129,6 +130,8 @@ export interface StoreSettings {
   phoenixdUrl: string | null;
   /** OpenNode API base override (testnet), or null for the live default. */
   opennodeApiUrl: string | null;
+  /** InfiniteTag (sem o $) da conta InfinitePay, ou null. */
+  infinitepayHandle: string | null;
 }
 
 /** One setting value, or null if unset. */
@@ -220,12 +223,14 @@ export function parseStoreSettings(
     paymentProvider:
       map.get('payment_provider') === 'lightning' ? 'lightning'
       : map.get('payment_provider') === 'opennode' ? 'opennode'
+      : map.get('payment_provider') === 'infinitepay' ? 'infinitepay'
       : map.get('payment_provider') === 'demo' ? 'demo'
       : 'stripe',
     lightningBackend: map.get('lightning_backend') === 'lnbits' ? 'lnbits' : 'phoenixd',
     lnbitsUrl: map.get('lnbits_url') ?? null,
     phoenixdUrl: map.get('phoenixd_url') ?? null,
     opennodeApiUrl: map.get('opennode_api_url') ?? null,
+    infinitepayHandle: map.get('infinitepay_handle') ?? null,
   };
 }
 

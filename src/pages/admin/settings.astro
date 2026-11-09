@@ -297,6 +297,13 @@ if (Astro.request.method === 'POST') {
     }
   } else if (action === 'save_shippo') {
     await applySecrets(['shippo_api_key']);
+  } else if (action === 'save_infinitepay') {
+    const handle = String(form.get('infinitepay_handle') ?? '').trim().replace(/^\$/, '');
+    if (handle && !/^[a-z0-9][a-z0-9._-]{1,60}$/i.test(handle)) {
+      validationError = 'InfiniteTag inválida. Use só letras, números, ponto, hífen ou sublinhado (sem o $).';
+    } else {
+      await setSetting(env.DB, 'infinitepay_handle', handle || null);
+    }
   } else if (action === 'save_opennode') {
     await setSetting(env.DB, 'opennode_api_url', String(form.get('opennode_api_url') ?? '').trim() || null);
     await applySecrets(['opennode_api_key']);
@@ -442,6 +449,7 @@ const featureRows = baseFeatureRows.map((row) => ({
 }));
 
 const paymentMethods: { m: PaymentMethod; label: string }[] = [
+  { m: 'infinitepay', label: 'InfinitePay (Pix e cartão)' },
   { m: 'stripe', label: 'Card (Stripe)' },
   { m: 'lightning', label: 'Lightning' },
   { m: 'opennode', label: 'Bitcoin (OpenNode)' },
@@ -460,6 +468,7 @@ const payments = {
   lnbitsUrl: settings.lnbitsUrl ?? '',
   phoenixdUrl: settings.phoenixdUrl ?? '',
   opennodeApiUrl: settings.opennodeApiUrl ?? '',
+  infinitepayHandle: settings.infinitepayHandle ?? '',
 };
 
 // Encrypted key vault (features/secrets). Keys are write-only — stored AES-GCM in
@@ -977,6 +986,33 @@ const sections = [
     </form>
 
     <div class="space-y-4">
+      {/* InfinitePay — Pix sem taxa e cartão em até 12x */}
+      <div class="rounded-lg border border-gray-200 bg-white p-4">
+        <div class="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p class="font-medium">InfinitePay — Pix e cartão</p>
+            <p class={pmMap.infinitepay.installed ? 'text-xs text-gray-500' : 'text-xs text-amber-700'}>
+              {pmMap.infinitepay.installed ? 'Recebendo pagamentos' : 'Informe a InfiniteTag para ativar'}
+            </p>
+          </div>
+          {pmMap.infinitepay.installed && <MethodToggle method="infinitepay" enabled={pmMap.infinitepay.enabled} label="InfinitePay" />}
+        </div>
+        <form method="POST" class="space-y-3 border-t border-gray-100 pt-3">
+          <input type="hidden" name="_action" value="save_infinitepay" />
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
+            InfiniteTag (sem o $)
+            <input type="text" name="infinitepay_handle" value={payments.infinitepayHandle} placeholder="grupo-oplin" class="w-64 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none" />
+          </label>
+          <p class="text-xs text-gray-400">
+            O cliente paga na página da InfinitePay. O pedido só é marcado como pago depois que a loja
+            confere o pagamento direto com a InfinitePay.
+          </p>
+          <button type="submit" class="mt-1 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover">
+            Salvar
+          </button>
+        </form>
+      </div>
+
       {/* Card (Stripe) */}
       <div class="rounded-lg border border-gray-200 bg-white p-4">
         <div class="mb-3 flex items-center justify-between gap-3">

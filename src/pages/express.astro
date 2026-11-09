@@ -132,12 +132,13 @@ const destination = stripeDestination(
   Astro.request.headers.get('cf-ipcountry'),
 );
 
-const heading = isBuyNow ? 'Buy now' : 'Checkout';
+const heading = isBuyNow ? 'Comprar agora' : 'Finalizar compra';
 const METHOD: Record<string, { label: string; hint: string }> = {
   stripe: { label: 'Pay with card', hint: 'Visa, Mastercard, Apple Pay & more' },
   lightning: { label: 'Pay with Lightning ⚡', hint: 'Instant — from any Lightning wallet' },
   opennode: { label: 'Pay with Bitcoin', hint: 'On-chain or Lightning (OpenNode)' },
-  demo: { label: 'Demo checkout', hint: 'Simulated — places a real test order, no charge' },
+  infinitepay: { label: 'Continuar', hint: 'Pix sem taxa ou cartão em até 12x' },
+  demo: { label: 'Pagamento de demonstração', hint: 'Simulado — cria um pedido de teste, sem cobrança' },
 };
 ---
 
