@@ -349,12 +349,13 @@ async function estoque(db: D1Database, token: string): Promise<void> {
   // Item (variação ou produto simples) conferido há mais tempo primeiro.
   const { results } = await db
     .prepare(
-      `SELECT 'v' AS t, v.id, v.olist_id, v.stock_checked_at AS c FROM product_variants v
-         JOIN products p ON p.id = v.product_id WHERE v.olist_id IS NOT NULL AND v.active = 1
-       UNION ALL
-       SELECT 'p' AS t, p.id, p.olist_id, p.olist_synced_at AS c FROM products p
-         WHERE p.olist_id IS NOT NULL AND p.variant_label IS NULL
-       ORDER BY c IS NOT NULL, c LIMIT ?`,
+      `SELECT t, id, olist_id FROM (
+         SELECT 'v' AS t, v.id, v.olist_id, v.stock_checked_at AS c FROM product_variants v
+           JOIN products p ON p.id = v.product_id WHERE v.olist_id IS NOT NULL AND v.active = 1
+         UNION ALL
+         SELECT 'p' AS t, p.id, p.olist_id, p.olist_synced_at AS c FROM products p
+           WHERE p.olist_id IS NOT NULL AND p.variant_label IS NULL
+       ) ORDER BY c IS NOT NULL, c LIMIT ?`,
     )
     .bind(ESTOQUE_POR_RODADA)
     .all<{ t: 'v' | 'p'; id: number; olist_id: string }>();
