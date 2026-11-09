@@ -41,7 +41,7 @@
     "@astrojs/cloudflare": "^14.1.7",
     "astro": "^7.1.6",
     "markdown-it": "^15.0.0",
-    "stripe": "^22.4.0",
+    "stripe": "^23.1.0",
     "uqr": "^0.1.3"
   },
   "devDependencies": {
