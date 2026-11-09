@@ -112,16 +112,30 @@ export const POST: APIRoute = async ({ request, params, url }) => {
   }
 
   if (evento === 'produtos' && dados && id(dados.id)) {
-    // O Olist registra o vínculo produto ↔ loja com estes códigos.
-    const variacoes = Array.isArray(dados.variacoes) ? dados.variacoes : [];
+    const variacoes = (Array.isArray(dados.variacoes) ? dados.variacoes : [])
+      .map((v) => (ehObj(v) && ehObj(v.variacao) ? v.variacao : v))
+      .filter(ehObj)
+      .filter((v) => id(v.id));
+    // Fotos ficam na variação (uma por cor): guarda as URLs para a importação.
+    for (const v of variacoes) {
+      const fotos = (Array.isArray(v.anexos) ? v.anexos : [])
+        .map((a) => (ehObj(a) ? String(a.url ?? a.anexo ?? '') : String(a ?? '')))
+        .filter((u) => /^https:\/\//.test(u))
+        .slice(0, 3);
+      for (const [pos, u] of fotos.entries()) {
+        await db
+          .prepare('INSERT INTO olist_var_imagens (olist_id, pos, url) VALUES (?, ?, ?) ON CONFLICT(olist_id, pos) DO UPDATE SET url = excluded.url')
+          .bind(String(v.id), pos, u)
+          .run();
+      }
+    }
+    // Vínculo produto ↔ loja: devolve o MESMO idMapeamento que o Olist mandou,
+    // com o código da loja (skuMapeamento). Sem isso o Olist acusa "não mapeado".
+    const sku = (o: Obj) => String(o.codigo ?? '').trim() || String(o.id);
     return Response.json({
-      idMapeamento: String(dados.id),
-      skuMapeamento: String(dados.codigo ?? dados.sku ?? dados.id),
-      variacoes: variacoes
-        .map((v) => (ehObj(v) && ehObj(v.variacao) ? v.variacao : v))
-        .filter(ehObj)
-        .filter((v) => id(v.id))
-        .map((v) => ({ id: String(v.id), idMapeamento: String(v.id), skuMapeamento: String(v.codigo ?? v.sku ?? v.id) })),
+      idMapeamento: String(dados.idMapeamento ?? dados.id),
+      skuMapeamento: sku(dados),
+      variacoes: variacoes.map((v) => ({ idMapeamento: String(v.idMapeamento ?? v.id), skuMapeamento: sku(v) })),
     });
   }
   return Response.json({ status: 'processado', ids: ids.length });

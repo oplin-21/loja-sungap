@@ -330,6 +330,7 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
         .run();
     }
   }
+  await fotosDasVariacoes(db, bucket, productId);
   // Variação que sumiu do Olist sai da vitrine.
   if (variacoes.length) {
     const ids = variacoes.map((x) => String(x.variacao.id));
@@ -340,6 +341,36 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
       )
       .bind(productId, ...ids)
       .run();
+  }
+}
+
+/**
+ * Fotos por variação (aviso do Olist): cada cor ganha a sua foto, e o produto
+ * sem foto própria usa a da primeira variação. Copia só o que ainda falta.
+ */
+async function fotosDasVariacoes(db: D1Database, bucket: R2Bucket, productId: number): Promise<void> {
+  const { results } = await db
+    .prepare(
+      `SELECT v.id AS vid, v.image_id, vi.url FROM product_variants v
+         JOIN olist_var_imagens vi ON vi.olist_id = v.olist_id AND vi.pos = 0
+        WHERE v.product_id = ? AND v.active = 1 AND v.image_id IS NULL
+        ORDER BY v.position`,
+    )
+    .bind(productId)
+    .all<{ vid: number; image_id: number | null; url: string }>();
+  if (!results.length) return;
+  let posicao =
+    (await db.prepare('SELECT COALESCE(MAX(position), -1) + 1 AS p FROM product_images WHERE product_id = ?').bind(productId).first<{ p: number }>())?.p ?? 0;
+  for (const r of results.slice(0, 12)) { // teto por rodada; o resto entra na próxima
+    const key = await copiarImagem(db, bucket, r.url);
+    if (!key) continue;
+    const img = await db
+      .prepare('INSERT INTO product_images (product_id, image_key, position, public_id) VALUES (?, ?, ?, ?) RETURNING id')
+      .bind(productId, key, posicao, generatePublicId('productImage'))
+      .first<{ id: number }>();
+    if (img) await db.prepare('UPDATE product_variants SET image_id = ? WHERE id = ?').bind(img.id, r.vid).run();
+    await db.prepare('UPDATE products SET image_key = COALESCE(image_key, ?) WHERE id = ?').bind(key, productId).run();
+    posicao += 1;
   }
 }
 
