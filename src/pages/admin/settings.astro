@@ -1108,11 +1108,20 @@ const sections = [
             <p class="font-medium text-gray-700">Endereços para colar na integração do Olist</p>
             <p class="mt-1">Com eles, o botão "Enviar para o e-commerce" do Olist coloca o produto na loja na hora.</p>
             <p class="mt-2">Envio de produtos</p>
-            <input readonly value={olist.urlProdutos} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" onclick="this.select()" />
+            <div class="flex items-center gap-2">
+              <input readonly value={olist.urlProdutos} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" />
+              <button type="button" data-copiar={olist.urlProdutos} class="shrink-0 rounded border border-gray-300 px-2 py-1 text-[11px] font-medium hover:border-brand">Copiar</button>
+            </div>
             <p class="mt-2">Notificações de estoque</p>
-            <input readonly value={olist.urlEstoque} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" onclick="this.select()" />
+            <div class="flex items-center gap-2">
+              <input readonly value={olist.urlEstoque} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" />
+              <button type="button" data-copiar={olist.urlEstoque} class="shrink-0 rounded border border-gray-300 px-2 py-1 text-[11px] font-medium hover:border-brand">Copiar</button>
+            </div>
             <p class="mt-2">Envio dos preços</p>
-            <input readonly value={olist.urlPrecos} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" onclick="this.select()" />
+            <div class="flex items-center gap-2">
+              <input readonly value={olist.urlPrecos} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" />
+              <button type="button" data-copiar={olist.urlPrecos} class="shrink-0 rounded border border-gray-300 px-2 py-1 text-[11px] font-medium hover:border-brand">Copiar</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1550,6 +1559,26 @@ const sections = [
     </dl>
   </section>
 
+  <script is:inline>
+    // Botão "Copiar" dos endereços do Olist (área de transferência, com plano B).
+    document.addEventListener('click', async (ev) => {
+      const b = ev.target.closest && ev.target.closest('[data-copiar]');
+      if (!b) return;
+      const texto = b.getAttribute('data-copiar') || '';
+      let ok = false;
+      try { await navigator.clipboard.writeText(texto); ok = true; } catch (_) {}
+      if (!ok) {
+        const t = document.createElement('textarea');
+        t.value = texto; t.style.position = 'fixed'; t.style.opacity = '0';
+        document.body.appendChild(t); t.select();
+        try { ok = document.execCommand('copy'); } catch (_) {}
+        t.remove();
+      }
+      const antes = b.textContent;
+      b.textContent = ok ? 'Copiado ✓' : 'Selecione e copie';
+      setTimeout(() => { b.textContent = antes; }, 1800);
+    });
+  </script>
   <script is:inline>
     // Flash polish: fade the confirmation out, and strip any ?msg the URL still has
     // (e.g. from the reindex redirect) so a refresh doesn't re-show it.
