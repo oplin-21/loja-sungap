@@ -117,7 +117,7 @@ export const POST: APIRoute = async ({ request, params, url }) => {
         .map((v) => (ehObj(v) && ehObj(v.variacao) ? v.variacao : v))
         .filter(ehObj)
         .filter((v) => id(v.id))
-        .map((v) => ({ idMapeamento: String(v.id), skuMapeamento: String(v.codigo ?? v.sku ?? v.id) })),
+        .map((v) => ({ id: String(v.id), idMapeamento: String(v.id), skuMapeamento: String(v.codigo ?? v.sku ?? v.id) })),
     });
   }
   return Response.json({ status: 'processado', ids: ids.length });

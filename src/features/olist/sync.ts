@@ -49,6 +49,7 @@ export async function chamar(token: string, endpoint: string, params: Record<str
     body,
   });
   const texto = await res.text();
+  if (res.status === 429) throw new ErroOlist(`Olist ${endpoint}: limite de chamadas excedido`);
   if (!res.ok) throw new ErroOlist(`Olist ${endpoint} respondeu ${res.status}`);
   let j: { retorno?: Record<string, unknown> };
   try {
@@ -58,7 +59,15 @@ export async function chamar(token: string, endpoint: string, params: Record<str
   }
   const r = j.retorno ?? {};
   if (r.status !== 'OK') {
-    const erros = (r.erros as { erro?: string }[] | undefined)?.map((e) => e.erro).join('; ');
+    const doRegistro = (r.registros as { registro?: { erros?: { erro?: string }[]; codigo_erro?: unknown } }[] | undefined)
+      ?.flatMap((x) => [
+        ...(x.registro?.erros ?? []).map((e) => e.erro),
+        x.registro?.codigo_erro ? `código ${x.registro.codigo_erro}` : undefined,
+      ])
+      .filter(Boolean);
+    const erros = [...((r.erros as { erro?: string }[] | undefined)?.map((e) => e.erro) ?? []), ...(doRegistro ?? [])]
+      .filter(Boolean)
+      .join('; ');
     // codigo_erro 20 = "a consulta não retornou registros" — não é falha.
     if (String(r.codigo_erro) === '20') return { ...r, vazio: true };
     throw new ErroOlist(`Olist ${endpoint}: ${erros || r.codigo_erro || 'erro'}`);

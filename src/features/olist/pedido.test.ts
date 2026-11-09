@@ -35,7 +35,7 @@ describe('montarPedido', () => {
     expect(pedido.data_pedido).toBe('09/11/2026');
     expect(pedido.numero_pedido_ecommerce).toBe('7y3jpd6p2q');
     expect(pedido.situacao).toBe('aprovado');
-    expect(pedido.id_ecommerce).toBe('54851');
+    expect(pedido.id_ecommerce).toBe(54851);
     expect(pedido.cliente).toMatchObject({ tipo_pessoa: 'J', cpf_cnpj: '11222333000181', cep: '01001000', fone: '11988887777', uf: 'SP', numero: '120', bairro: 'Centro' });
     expect(pedido.itens[0].item).toMatchObject({ id_produto: '901', codigo: 'OMB3-BG', quantidade: '2', valor_unitario: '1899.90', unidade: 'UN' });
     expect(pedido.itens[1].item.id_produto).toBeUndefined();

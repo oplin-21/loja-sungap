@@ -68,21 +68,23 @@ export function montarPedido(d: DadosPedido, comVinculo = true): Record<string, 
   const e = d.endereco;
   const doc = so(e.document);
   const tipo = doc.length === 14 ? 'J' : 'F';
+  const corta = (v: unknown, n: number) => String(v ?? '').trim().slice(0, n);
   const cliente = {
-    nome: String(e.name ?? '').trim() || d.email || 'Cliente da loja',
+    nome: corta(String(e.name ?? '').trim() || d.email || 'Cliente da loja', 30),
     tipo_pessoa: tipo,
     cpf_cnpj: doc,
-    endereco: e.line1 ?? '',
-    numero: e.number ?? '',
-    complemento: e.line2 ?? '',
-    bairro: e.district ?? '',
+    endereco: corta(e.line1, 50),
+    numero: corta(e.number, 10),
+    complemento: corta(e.line2, 50),
+    bairro: corta(e.district, 30),
     cep: so(e.postal),
-    cidade: e.city ?? '',
-    uf: e.state ?? '',
+    cidade: corta(e.city, 30),
+    uf: corta(e.state, 2).toUpperCase(),
     pais: 'Brasil',
     fone: so(e.phone),
-    email: d.email ?? '',
-    atualizar_cliente: 'S',
+    email: corta(d.email, 50),
+    // Sem CPF/CNPJ o Olist acha o contato pelo nome: não sobrescrever cliente homônimo.
+    atualizar_cliente: doc ? 'S' : 'N',
   };
   const itens = d.itens.map((i) => ({
     item: {
@@ -111,17 +113,16 @@ export function montarPedido(d: DadosPedido, comVinculo = true): Record<string, 
       cidade: cliente.cidade,
       uf: cliente.uf,
       fone: cliente.fone,
-      nome_destinatario: cliente.nome,
+      nome_destinatario: corta(String(e.name ?? '').trim() || cliente.nome, 60),
     },
     itens,
     valor_frete: reais(d.freteCents),
-    ...(d.freteNome ? { forma_frete: d.freteNome.slice(0, 30), nome_transportador: d.freteNome.slice(0, 100) } : {}),
     frete_por_conta: 'R',
     valor_desconto: reais(d.descontoCents),
     meio_pagamento: d.meioPagamento,
-    obs: `Pedido ${d.referencia} da loja online — pago via ${d.meioPagamento}`.slice(0, 100),
+    obs: `Pedido ${d.referencia} da loja online — pago via ${d.meioPagamento}${d.freteNome ? ` — frete: ${d.freteNome}` : ''}`.slice(0, 100),
   };
-  if (comVinculo && d.idEcommerce) pedido.id_ecommerce = d.idEcommerce;
+  if (comVinculo && d.idEcommerce) pedido.id_ecommerce = Number(d.idEcommerce);
   return { pedido };
 }
 
@@ -259,7 +260,8 @@ export async function enviarPedidosOlist(
         } catch (err) {
           // Vínculo com a integração recusado (ex.: integração ainda não instalada):
           // o pedido NÃO foi criado — tenta uma vez sem o vínculo.
-          if (opts.idEcommerce && /id_ecommerce|integra[çc][ãa]o/i.test((err as Error).message)) {
+          const msg = (err as Error).message;
+          if (opts.idEcommerce && /id_ecommerce|integra[çc][ãa]o/i.test(msg) && !/j[áa] existe|duplic|c[óo]digo 30\b/i.test(msg)) {
             feito = (await procurar(token, referencia)) ?? (await incluir(token, montarPedido(dados, false)));
           } else throw err;
         }
@@ -274,11 +276,15 @@ export async function enviarPedidosOlist(
       enviados += 1;
     } catch (err) {
       erros += 1;
+      const limite = err instanceof ErroOlist && /bloquead|excedid|limite|429/i.test(err.message);
       await db
-        .prepare("UPDATE orders SET olist_estado = 'erro', olist_erro = ? WHERE id = ?")
-        .bind((err as Error).message.slice(0, 300), o.id)
+        .prepare(
+          `UPDATE orders SET olist_estado = 'erro', olist_erro = ?,
+                  olist_tentativas = olist_tentativas - ? WHERE id = ?`,
+        )
+        .bind((err as Error).message.slice(0, 300), limite ? 1 : 0, o.id)
         .run();
-      if (err instanceof ErroOlist && /bloquead|excedid|limite/i.test(err.message)) break;
+      if (limite) break;
     }
   }
   return { enviados, erros };
