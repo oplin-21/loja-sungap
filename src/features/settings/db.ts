@@ -56,6 +56,9 @@ export type SettingKey =
   | 'infinitepay_handle' // InfiniteTag da conta InfinitePay que recebe; absent = InfinitePay desligada
   | 'olist_marca' // marca do Olist que entra nesta loja (ex.: Sungap); absent = sincronização desligada
   | 'olist_sync' // estado JSON da sincronização com o Olist
+  | 'olist_id_ecommerce' // número da integração "API do ERP" no Olist (pedido entra vinculado a ela)
+  | 'olist_aviso_chave' // chave aleatória que autentica os avisos que o Olist manda para a loja
+  | 'olist_pedidos' // '1' = pedido pago sobe sozinho para o Olist
   | 'melhorenvio_cep_origem' // CEP de onde sai a mercadoria
   | 'melhorenvio_sandbox' // '1' = ambiente de teste do Melhor Envio
   | `enc:${string}`; // AES-GCM-encrypted secret (see features/secrets/store.ts), e.g. 'enc:stripe_secret_key'. Never loaded as plaintext into locals.

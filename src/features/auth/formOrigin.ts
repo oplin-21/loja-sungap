@@ -28,6 +28,8 @@ function isCapabilityPayPath(pathname: string): boolean {
  */
 export function isForbiddenFormOrigin(request: Request, url: URL): boolean {
   if (SAFE_METHODS.has(request.method)) return false;
+  // Avisos do Olist: servidor a servidor, sem cookie, autenticados pela chave da URL.
+  if (request.method === 'POST' && url.pathname.startsWith('/api/olist/')) return false;
 
   const originMatches = request.headers.get('origin') === url.origin;
   if (!request.headers.has('content-type')) return !originMatches;

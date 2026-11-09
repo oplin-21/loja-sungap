@@ -39,9 +39,9 @@ const ESTADO_INICIAL: EstadoSync = {
   importados: 0,
 };
 
-class ErroOlist extends Error {}
+export class ErroOlist extends Error {}
 
-async function chamar(token: string, endpoint: string, params: Record<string, string> = {}) {
+export async function chamar(token: string, endpoint: string, params: Record<string, string> = {}) {
   const body = new URLSearchParams({ token, formato: 'json', ...params });
   const res = await fetch(`${API}/${endpoint}.php`, {
     method: 'POST',
@@ -182,9 +182,13 @@ async function detalhar(
   e: EstadoSync,
 ): Promise<void> {
   const { results } = await db
-    .prepare("SELECT olist_id, preco_cents FROM olist_fila WHERE estado = 'novo' AND tipo IN ('P','N') ORDER BY olist_id LIMIT ?")
-    .bind(DETALHAR_POR_RODADA)
-    .all<{ olist_id: string; preco_cents: number }>();
+    .prepare(
+      `SELECT olist_id, preco_cents, estado, origem FROM olist_fila
+        WHERE tipo IN ('P','N') AND (estado = 'enviado' OR (estado = 'novo' AND (? <> '' OR origem = 'aviso')))
+        ORDER BY estado = 'enviado' DESC, olist_id LIMIT ?`,
+    )
+    .bind(marca, DETALHAR_POR_RODADA)
+    .all<{ olist_id: string; preco_cents: number; estado: string; origem: string | null }>();
   if (!results.length) {
     e.fase = 'estoque';
     return;
@@ -194,7 +198,10 @@ async function detalhar(
       const r = await chamar(token, 'produto.obter', { id: item.olist_id });
       const p = (r.produto ?? {}) as Record<string, unknown>;
       const marcaProduto = String(p.marca ?? '').trim().toLowerCase();
-      const entra = marcaProduto === marca.toLowerCase() && reaisParaCentavos(p.preco) > 0;
+      // Enviado pelo Olist ("Enviar para o e-commerce") entra sem filtro de marca.
+      const escolhido =
+        item.estado === 'enviado' || item.origem === 'aviso' || (!!marca && marcaProduto === marca.toLowerCase());
+      const entra = escolhido && reaisParaCentavos(p.preco) > 0;
       if (!entra) {
         await db.prepare("UPDATE olist_fila SET estado = 'ignorado' WHERE olist_id = ?").bind(item.olist_id).run();
         // Produto que estava na loja e trocou de marca ou zerou o preço: sai de vitrine.
@@ -376,12 +383,20 @@ export async function rodadaOlist(
   const e = await lerEstado(db);
   try {
     if (
+      marca &&
       e.fase !== 'listar' &&
       (!e.listado_em || Date.now() - Date.parse(e.listado_em) > RELISTAR_HORAS * 3600_000)
     ) {
       e.fase = 'listar';
       e.pagina = 1;
     }
+    // Produto enviado pelo Olist passa na frente de tudo.
+    const enviado = await db
+      .prepare("SELECT 1 FROM olist_fila WHERE estado = 'enviado' AND tipo IN ('P','N') LIMIT 1")
+      .first();
+    if (enviado) e.fase = 'detalhar';
+    // Sem marca configurada, a loja só traz o que o Olist enviar (modelo Nuvemshop).
+    else if (!marca && e.fase === 'listar') e.fase = 'estoque';
     if (e.fase === 'listar') await listar(db, token, e);
     else if (e.fase === 'detalhar') await detalhar(db, bucket, token, marca, currency, e);
     else await estoque(db, token);

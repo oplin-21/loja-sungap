@@ -5,6 +5,8 @@ import { releaseExpiredReservations } from './features/orders/reservations';
 import { getSetting } from './features/settings/db';
 import { getSecret } from './features/secrets/store';
 import { rodadaOlist } from './features/olist/sync';
+import { enviarPedidosOlist } from './features/olist/pedido';
+import { orderReference } from './features/orders/number';
 import { getConfig } from './config';
 
 /**
@@ -52,11 +54,20 @@ async function runScheduledSweeps(): Promise<void> {
     console.error('Scheduled notification sweep failed:', err);
   }
 
-  // Catálogo do Olist (somente leitura): uma rodada curta a cada cron.
+  // Olist: catálogo (leitura) e, se ligado, pedidos pagos (escrita autorizada).
   try {
-    const marca = await getSetting(db, 'olist_marca');
-    const token = marca ? await getSecret(db, 'olist_api_token') : null;
-    if (marca && token) await rodadaOlist(db, env.BUCKET, token, marca, getConfig().currency);
+    const token = await getSecret(db, 'olist_api_token');
+    if (token) {
+      const marca = (await getSetting(db, 'olist_marca')) ?? '';
+      await rodadaOlist(db, env.BUCKET, token, marca, getConfig().currency);
+      if ((await getSetting(db, 'olist_pedidos')) === '1') {
+        await enviarPedidosOlist(db, token, {
+          idEcommerce: await getSetting(db, 'olist_id_ecommerce'),
+          nomeLoja: (await getSetting(db, 'store_name')) ?? getConfig().storeName,
+          referencia: (publicId, id) => orderReference(publicId, id, getConfig().orderNumber),
+        });
+      }
+    }
   } catch (err) {
     console.error('Scheduled Olist sync failed:', err);
   }

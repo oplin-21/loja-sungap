@@ -111,6 +111,17 @@ const parcelWeightValue =
   order.shipping_weight_grams != null ? formatWeightValue(order.shipping_weight_grams, weightUnit) : '';
 
 const trackUrl = trackingUrl(order.tracking_carrier, order.tracking_number);
+// Envio do pedido ao Olist (colunas da migração 0041).
+const ol = order as unknown as { olist_estado: string | null; olist_pedido_numero: string | null; olist_erro: string | null; olist_tentativas: number };
+const olistErro = ol.olist_estado === 'erro';
+const olistTexto =
+  ol.olist_estado === 'ok'
+    ? `Pedido nº ${ol.olist_pedido_numero} no Olist`
+    : ol.olist_estado === 'fora' || order.payment_method === 'demo'
+      ? ''
+      : olistErro
+        ? `Não subiu: ${ol.olist_erro ?? 'erro'}${(ol.olist_tentativas ?? 0) >= 5 ? ' (tentativas esgotadas — lance no Olist à mão)' : ' (nova tentativa automática)'}`
+        : 'Aguardando envio ao Olist (até 5 minutos)';
 const error = Astro.url.searchParams.get('error');
 const noticeMsg = Astro.url.searchParams.get('notice');
 // Reissue is offered only where it can work: a settled ord_ order with an
@@ -207,6 +218,12 @@ const willEmailCustomer =
       <dt class="text-xs uppercase tracking-widest text-gray-400">Situação</dt>
       <dd class="font-medium">{order.status}</dd>
     </div>
+    {olistTexto && (
+      <div>
+        <dt class="text-xs uppercase tracking-widest text-gray-400">Olist</dt>
+        <dd class={olistErro ? 'text-amber-700' : ''}>{olistTexto}</dd>
+      </div>
+    )}
     <div>
       <dt class="text-xs uppercase tracking-widest text-gray-400">Feito em</dt>
       <dd>{formatDate(order.created_at, undefined, timeZone)}</dd>

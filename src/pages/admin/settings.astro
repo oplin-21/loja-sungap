@@ -301,12 +301,14 @@ if (Astro.request.method === 'POST') {
     await applySecrets(['shippo_api_key']);
   } else if (action === 'save_olist') {
     await setSetting(env.DB, 'olist_marca', String(form.get('olist_marca') ?? '').trim() || null);
+    await setSetting(env.DB, 'olist_id_ecommerce', soDigitos(String(form.get('olist_id_ecommerce') ?? '')) || null);
+    await setSetting(env.DB, 'olist_pedidos', form.get('olist_pedidos') === '1' ? '1' : null);
     await applySecrets(['olist_api_token']);
   } else if (action === 'sync_olist') {
     const marca =
       (await env.DB.prepare("SELECT value FROM settings WHERE key = 'olist_marca'").first<{ value: string }>())?.value ?? '';
     const token = await getSecret(env.DB, 'olist_api_token');
-    if (!marca || !token) validationError = 'Informe a marca e o token do Olist antes de sincronizar.';
+    if (!token) validationError = 'Informe o token do Olist antes de sincronizar.';
     else {
       const est = await rodadaOlist(env.DB, env.BUCKET, token, marca, getConfig().currency);
       if (est.ultimo_erro) validationError = `Olist: ${est.ultimo_erro}`;
@@ -494,8 +496,21 @@ const payments = {
 };
 const lerConf = async (k: string) =>
   (await env.DB.prepare('SELECT value FROM settings WHERE key = ?').bind(k).first<{ value: string }>())?.value ?? '';
+// Chave que autentica os avisos do Olist (criada uma vez, nunca muda sozinha).
+let avisoChave = await lerConf('olist_aviso_chave');
+if (!avisoChave) {
+  avisoChave = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  await setSetting(env.DB, 'olist_aviso_chave', avisoChave);
+}
+const origemLoja = new URL(Astro.request.url).origin;
 const olist = {
   marca: await lerConf('olist_marca'),
+  idEcommerce: await lerConf('olist_id_ecommerce'),
+  pedidos: (await lerConf('olist_pedidos')) === '1',
+  urlProdutos: `${origemLoja}/api/olist/produtos?chave=${avisoChave}`,
+  urlEstoque: `${origemLoja}/api/olist/estoque?chave=${avisoChave}`,
+  urlPrecos: `${origemLoja}/api/olist/precos?chave=${avisoChave}`,
+  pendentes: (await env.DB.prepare("SELECT count(*) AS n FROM orders WHERE status = 'paid' AND COALESCE(payment_method,'') <> 'demo' AND (olist_estado IS NULL OR olist_estado IN ('erro','enviando'))").first<{ n: number }>().catch(() => null))?.n ?? 0,
   estado: await lerEstado(env.DB),
   produtos: (await env.DB.prepare('SELECT count(*) AS n FROM products WHERE olist_id IS NOT NULL AND active = 1').first<{ n: number }>())?.n ?? 0,
   fila: (await env.DB.prepare("SELECT count(*) AS n FROM olist_fila WHERE estado = 'novo' AND tipo IN ('P','N')").first<{ n: number }>().catch(() => null))?.n ?? 0,
@@ -506,7 +521,7 @@ const melhorEnvio = {
 };
 const FASE_TEXTO: Record<string, string> = {
   listar: 'Lendo a lista de produtos do Olist',
-  detalhar: 'Trazendo os produtos da marca',
+  detalhar: 'Trazendo os produtos para a loja',
   estoque: 'Conferindo o estoque em ciclo',
 };
 
@@ -1063,8 +1078,16 @@ const sections = [
         <form method="POST" class="space-y-3 border-t border-gray-100 pt-3">
           <input type="hidden" name="_action" value="save_olist" />
           <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-            Marca que entra nesta loja
-            <input type="text" name="olist_marca" value={olist.marca} placeholder="Sungap" class="w-64 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none" />
+            Marca que entra nesta loja (opcional)
+            <input type="text" name="olist_marca" value={olist.marca} placeholder="vazio = só o que o Olist enviar" class="w-64 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none" />
+          </label>
+          <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
+            Número da integração no Olist
+            <input type="text" inputmode="numeric" name="olist_id_ecommerce" value={olist.idEcommerce} placeholder="ex.: 54851" class="w-40 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none" />
+          </label>
+          <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="olist_pedidos" value="1" checked={olist.pedidos} class="size-4" />
+            Enviar cada pedido pago para o Olist (cliente, endereço, itens e frete)
           </label>
           <SecretField name="olist_api_token" label="Token da API do Olist" hint="Olist → Configurações → API (token da conta)" storedInD1={inD1('olist_api_token')} vault={vault} />
           <button type="submit" class="mt-1 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover">
@@ -1072,7 +1095,7 @@ const sections = [
           </button>
         </form>
         <div class="mt-3 border-t border-gray-100 pt-3 text-xs text-gray-500">
-          <p>{olist.produtos} produto(s) do Olist na loja · {olist.fila} aguardando leitura</p>
+          <p>{olist.produtos} produto(s) do Olist na loja · {olist.fila} aguardando leitura{olist.pedidos ? ` · ${olist.pendentes} pedido(s) aguardando envio ao Olist` : ''}</p>
           <p>Etapa: {FASE_TEXTO[olist.estado.fase] ?? olist.estado.fase}{olist.estado.ultima_rodada ? ` · última rodada ${new Date(olist.estado.ultima_rodada).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}` : ''}</p>
           {olist.estado.ultimo_erro && <p class="text-amber-700">Último aviso: {olist.estado.ultimo_erro}</p>}
           <form method="POST" class="mt-2">
@@ -1080,6 +1103,16 @@ const sections = [
             <button type="submit" class="rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium hover:border-brand">Sincronizar agora</button>
           </form>
           <p class="mt-1 text-gray-400">A loja também sincroniza sozinha a cada 5 minutos.</p>
+          <div class="mt-3 border-t border-gray-100 pt-3">
+            <p class="font-medium text-gray-700">Endereços para colar na integração do Olist</p>
+            <p class="mt-1">Com eles, o botão "Enviar para o e-commerce" do Olist coloca o produto na loja na hora.</p>
+            <p class="mt-2">Envio de produtos</p>
+            <input readonly value={olist.urlProdutos} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" onclick="this.select()" />
+            <p class="mt-2">Notificações de estoque</p>
+            <input readonly value={olist.urlEstoque} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" onclick="this.select()" />
+            <p class="mt-2">Envio dos preços</p>
+            <input readonly value={olist.urlPrecos} class="w-full rounded border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px]" onclick="this.select()" />
+          </div>
         </div>
       </div>
 
