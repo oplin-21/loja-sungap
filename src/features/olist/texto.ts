@@ -47,6 +47,17 @@ export function slugify(s: string): string {
 
 /** Rótulo da variação a partir da grade ({ Cor: 'Bege' } → 'Bege'). */
 export function rotuloGrade(grade: unknown): { grupo: string | null; rotulo: string } {
+  // Também chega como lista [{ chave: 'Cor', valor: 'Bege' }].
+  if (Array.isArray(grade)) {
+    const itens = grade.filter((g) => g && typeof g === 'object') as { chave?: unknown; valor?: unknown }[];
+    if (itens.length) {
+      return {
+        grupo: itens.map((g) => String(g.chave ?? '')).join(' / ') || null,
+        rotulo: itens.map((g) => String(g.valor ?? '')).join(' / '),
+      };
+    }
+    return { grupo: null, rotulo: '' };
+  }
   if (grade && typeof grade === 'object') {
     const entradas = Object.entries(grade as Record<string, unknown>);
     if (entradas.length > 0) {

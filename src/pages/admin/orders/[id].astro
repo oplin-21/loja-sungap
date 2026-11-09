@@ -117,7 +117,7 @@ const olistErro = ol.olist_estado === 'erro';
 const olistTexto =
   ol.olist_estado === 'ok'
     ? `Pedido nº ${ol.olist_pedido_numero} no Olist`
-    : ol.olist_estado === 'fora' || order.payment_method === 'demo'
+    : ol.olist_estado === 'fora' || order.payment_method === 'demo' || order.status !== 'paid'
       ? ''
       : olistErro
         ? `Não subiu: ${ol.olist_erro ?? 'erro'}${(ol.olist_tentativas ?? 0) >= 5 ? ' (tentativas esgotadas — lance no Olist à mão)' : ' (nova tentativa automática)'}`
@@ -216,7 +216,7 @@ const willEmailCustomer =
   <dl class="mb-8 grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:max-w-lg">
     <div>
       <dt class="text-xs uppercase tracking-widest text-gray-400">Situação</dt>
-      <dd class="font-medium">{order.status}</dd>
+      <dd class="font-medium">{({ paid: 'Pago', refunded: 'Reembolsado', partially_refunded: 'Reembolso parcial' } as Record<string, string>)[order.status] ?? order.status}</dd>
     </div>
     {olistTexto && (
       <div>

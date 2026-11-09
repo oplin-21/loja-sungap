@@ -173,8 +173,8 @@ async function dadosDoPedido(
   const { results } = await db
     .prepare(
       `SELECT oi.name, oi.price_cents, oi.quantity,
-              COALESCE(v.olist_id, p.olist_id) AS olist_id,
-              COALESCE(v.sku, p.sku) AS sku
+              CASE WHEN oi.variant_id IS NOT NULL THEN v.olist_id ELSE p.olist_id END AS olist_id,
+              CASE WHEN oi.variant_id IS NOT NULL THEN v.sku ELSE p.sku END AS sku
          FROM order_items oi
          LEFT JOIN products p ON p.id = oi.product_id
          LEFT JOIN product_variants v ON v.id = oi.variant_id

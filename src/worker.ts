@@ -58,15 +58,20 @@ async function runScheduledSweeps(): Promise<void> {
   try {
     const token = await getSecret(db, 'olist_api_token');
     if (token) {
+      // Pedidos primeiro e isolados: falha do catálogo nunca segura pedido pago.
+      try {
+        if ((await getSetting(db, 'olist_pedidos')) === '1') {
+          await enviarPedidosOlist(db, token, {
+            idEcommerce: await getSetting(db, 'olist_id_ecommerce'),
+            nomeLoja: (await getSetting(db, 'store_name')) ?? getConfig().storeName,
+            referencia: (publicId, id) => orderReference(publicId, id, getConfig().orderNumber),
+          });
+        }
+      } catch (err) {
+        console.error('Scheduled Olist orders failed:', err);
+      }
       const marca = (await getSetting(db, 'olist_marca')) ?? '';
       await rodadaOlist(db, env.BUCKET, token, marca, getConfig().currency);
-      if ((await getSetting(db, 'olist_pedidos')) === '1') {
-        await enviarPedidosOlist(db, token, {
-          idEcommerce: await getSetting(db, 'olist_id_ecommerce'),
-          nomeLoja: (await getSetting(db, 'store_name')) ?? getConfig().storeName,
-          referencia: (publicId, id) => orderReference(publicId, id, getConfig().orderNumber),
-        });
-      }
     }
   } catch (err) {
     console.error('Scheduled Olist sync failed:', err);

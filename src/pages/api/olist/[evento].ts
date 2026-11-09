@@ -80,6 +80,20 @@ export const POST: APIRoute = async ({ request, params, url }) => {
   }
   const { ids, dados } = extrairIds(corpo);
   const db = env.DB;
+  // Aviso de preço não traz o id do produto: acha pelo código (SKU) na loja.
+  if (!ids.length && dados) {
+    for (const k of ['codigo', 'sku', 'skuMapeamentoPai', 'skuMapeamento']) {
+      const cod = String(dados[k] ?? '').trim();
+      if (!cod) continue;
+      const achado =
+        (await db.prepare('SELECT p.olist_id FROM product_variants v JOIN products p ON p.id = v.product_id WHERE v.sku = ? AND p.olist_id IS NOT NULL').bind(cod).first<{ olist_id: string }>()) ??
+        (await db.prepare('SELECT olist_id FROM products WHERE sku = ? AND olist_id IS NOT NULL').bind(cod).first<{ olist_id: string }>());
+      if (achado) {
+        ids.push(achado.olist_id);
+        break;
+      }
+    }
+  }
   await db
     .prepare('INSERT INTO olist_avisos (evento, corpo, ids) VALUES (?, ?, ?)')
     .bind(evento, texto.slice(0, 20_000), ids.join(','))
@@ -131,12 +145,11 @@ export const POST: APIRoute = async ({ request, params, url }) => {
     }
     // Vínculo produto ↔ loja: devolve o MESMO idMapeamento que o Olist mandou,
     // com o código da loja (skuMapeamento). Sem isso o Olist acusa "não mapeado".
-    const sku = (o: Obj) => String(o.codigo ?? '').trim() || String(o.id);
-    return Response.json({
-      idMapeamento: String(dados.idMapeamento ?? dados.id),
-      skuMapeamento: sku(dados),
-      variacoes: variacoes.map((v) => ({ idMapeamento: String(v.idMapeamento ?? v.id), skuMapeamento: sku(v) })),
-    });
+    // Formato que o Olist (Tiny) espera: lista plana, produto + cada variação.
+    const sku = (o: Obj) => String(o.codigo ?? o.sku ?? '').trim() || String(o.id);
+    return Response.json(
+      [dados, ...variacoes].map((o) => ({ idMapeamento: String(o.idMapeamento || o.id), skuMapeamento: sku(o) })),
+    );
   }
   return Response.json({ status: 'processado', ids: ids.length });
 };

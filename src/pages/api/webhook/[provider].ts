@@ -5,7 +5,7 @@ import {
   isMethodAvailable,
   type PaymentMethod,
 } from '../../../features/payments';
-import { getStoreSettings } from '../../../features/settings/db';
+import { getStoreSettings, getSetting } from '../../../features/settings/db';
 import { recordPaidWebhookOrder } from '../../../features/orders/recordWebhook';
 
 export const prerender = false;
@@ -24,7 +24,8 @@ export const POST: APIRoute = async ({ request, params }) => {
   }
 
   const payload = await request.text();
-  const origin = new URL(request.url).origin;
+  // Aviso chega pelo endereço técnico (workers.dev); os links dos e-mails usam o da loja.
+  const origin = (await getSetting(env.DB, 'store_url')) ?? new URL(request.url).origin;
 
   let result;
   try {

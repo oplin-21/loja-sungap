@@ -9,6 +9,9 @@ import { isAccessToken } from '../../features/ids/token.ts';
 import { resolveAccessToken } from '../../features/orders/guestAccess.ts';
 import { clearCart } from '../../features/cart/cart';
 import { catalogPath } from '../../features/settings/home';
+import { getPaymentProvider, isMethodAvailable } from '../../features/payments';
+import { getStoreSettings, getSetting } from '../../features/settings/db';
+import { recordPaidWebhookOrder } from '../../features/orders/recordWebhook';
 
 // Guest access: new orders are addressed ONLY by their otk_ access token
 // (resolved through the registry); legacy orders keep their pre-cutover
@@ -23,6 +26,33 @@ if (token && isAccessToken(token)) {
   order = await getOrderByPublicId(env.DB, token);
 } else if (token) {
   return new Response('Not found', { status: 404 });
+}
+
+// Volta da InfinitePay com os dados da transação e o pedido ainda não existe
+// (aviso atrasado ou barrado): confere o pagamento direto com a InfinitePay.
+// A consulta payment_check é a autoridade — os parâmetros da URL só dizem o que conferir.
+if (!order && token && isAccessToken(token) && Astro.url.searchParams.get('transaction_nsu')) {
+  const sp = Astro.url.searchParams;
+  try {
+    const settings = await getStoreSettings(env.DB);
+    if (isMethodAvailable('infinitepay', settings)) {
+      const provider = await getPaymentProvider('infinitepay');
+      const result = await provider.verifyWebhook(
+        JSON.stringify({
+          order_nsu: sp.get('order_nsu'),
+          transaction_nsu: sp.get('transaction_nsu'),
+          invoice_slug: sp.get('slug') ?? sp.get('invoice_slug'),
+        }),
+        Astro.request.headers,
+      );
+      const origem = (await getSetting(env.DB, 'store_url')) ?? Astro.url.origin;
+      await recordPaidWebhookOrder(result, origem, 'infinitepay', settings);
+      const access = await resolveAccessToken(env.DB, token);
+      order = access ? await getOrderByPublicId(env.DB, access.order_public_id) : null;
+    }
+  } catch (err) {
+    console.error('Conferência InfinitePay na volta do cliente falhou:', err);
+  }
 }
 
 // This page carries a capability URL: never cache it, never leak it in referrers.

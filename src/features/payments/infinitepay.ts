@@ -146,7 +146,8 @@ export function createInfinitePayProvider(db: D1Database, handle: string): Payme
       const orderNsu = String(hook.order_nsu ?? '');
       const transactionNsu = String(hook.transaction_nsu ?? '');
       const slug = String(hook.invoice_slug ?? hook.slug ?? '');
-      if (!orderNsu || !transactionNsu || !slug) throw new Error('InfinitePay: aviso incompleto');
+      // Aviso de outro evento (sem transação): responde OK para não ser reenviado.
+      if (!orderNsu || !transactionNsu || !slug) return { type: 'infinitepay.ignored' };
 
       const pending = await getPendingByHash(db, orderNsu);
       if (!pending) return { type: 'infinitepay.unknown' };

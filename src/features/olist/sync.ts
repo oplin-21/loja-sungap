@@ -262,10 +262,10 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
       .prepare(
         `UPDATE products SET name = ?, description = ?, price_cents = ?, currency = ?, weight_grams = ?, sku = ?,
            gtin = ?, brand = ?, length_cm = ?, width_cm = ?, height_cm = ?, variant_label = ?,
-           olist_synced_at = datetime('now')
+           active = ?, olist_synced_at = datetime('now')
          WHERE id = ?`,
       )
-      .bind(...campos, productId)
+      .bind(...campos, String(p.situacao ?? 'A') === 'I' ? 0 : 1, productId)
       .run();
   } else {
     const row = await db
@@ -317,7 +317,7 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
     if (ja) {
       await db
         .prepare('UPDATE product_variants SET label = ?, price_cents = ?, sku = ?, gtin = ?, position = ?, active = 1 WHERE id = ?')
-        .bind(rotulo || String(v.codigo ?? vid), preco, String(v.codigo ?? '') || null, fila?.gtin ?? null, i, ja.id)
+        .bind(rotulo || String(v.codigo ?? vid), preco, String(v.codigo ?? '') || null, fila?.gtin ?? (String(v.gtin ?? '') || null), i, ja.id)
         .run();
     } else {
       await db
@@ -326,7 +326,7 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
            VALUES (?, ?, ?, 0, ?, ?, ?, ?, ?)`,
         )
         .bind(productId, rotulo || String(v.codigo ?? vid), preco, String(v.codigo ?? '') || null, i, vid,
-          fila?.gtin ?? null, generatePublicId('variant'))
+          fila?.gtin ?? (String(v.gtin ?? '') || null), generatePublicId('variant'))
         .run();
     }
   }

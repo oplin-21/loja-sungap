@@ -55,6 +55,12 @@ const SWEEP_BATCH = 3;
  */
 export async function rememberStoreUrl(db: D1Database, origin: string): Promise<void> {
   if (!/^https?:\/\//.test(origin)) return;
+  // Endereço técnico (avisos de servidor) nunca vira o endereço da loja.
+  try {
+    if (/\.workers\.dev$/.test(new URL(origin).hostname)) return;
+  } catch {
+    return;
+  }
   try {
     if ((await getSetting(db, 'store_url')) === origin) return;
     await setSetting(db, 'store_url', origin);
