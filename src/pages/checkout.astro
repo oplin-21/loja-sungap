@@ -232,12 +232,22 @@ if (submitted) {
   if (!ufValida(addr.state)) errors.push('Escolha o estado.');
 
   if (errors.length === 0) {
-    const quote = quoteShipping(effectiveShipping, {
-      subtotalCents,
-      country: addr.country,
-      itemWeightGrams: shipment.itemWeightGrams,
-      missingWeight: shipment.missingWeight,
-    });
+    // Sem frete configurado (ou pedido sem item físico), a loja não inventa um
+    // valor: o pedido segue com "Frete a combinar" e o time fecha a entrega.
+    const shippingOn = effectiveShipping.enabled && shipment.shippingRequired;
+    const quote = shippingOn
+      ? quoteShipping(effectiveShipping, {
+          subtotalCents,
+          country: addr.country,
+          itemWeightGrams: shipment.itemWeightGrams,
+          missingWeight: shipment.missingWeight,
+        })
+      : {
+          options: [{ label: 'Frete a combinar', amountCents: 0 }],
+          omitted: [] as { reason: string }[],
+          missingWeight: [] as { name: string; productId: number }[],
+          shipmentWeightGrams: shipment.itemWeightGrams ?? null,
+        };
     options = quote.options;
     if (options.length === 0) {
       // Distinguish "we don't ship there" from "we can't price this basket", so the
@@ -464,7 +474,7 @@ const hasErrors = errors.length > 0;
                   {o.label}
                 </span>
                 <span class="text-muted">
-                  {o.amountCents === 0 ? 'Grátis' : formatPrice(o.amountCents, currency)} · total{' '}
+                  {o.amountCents === 0 ? (o.label === 'Frete a combinar' ? 'a combinar' : 'Grátis') : formatPrice(o.amountCents, currency)} · total{' '}
                   {formatPrice(subtotalCents + o.amountCents, currency)}
                 </span>
               </label>
