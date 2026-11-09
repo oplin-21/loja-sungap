@@ -399,6 +399,14 @@ async function estoque(db: D1Database, token: string): Promise<void> {
         .prepare("UPDATE product_variants SET stock = ?, stock_checked_at = datetime('now') WHERE id = ?")
         .bind(disponivel, it.id)
         .run();
+      // Produto com cores: o saldo do produto é a soma das cores (vitrine mostra "esgotado" pelo produto).
+      await db
+        .prepare(
+          `UPDATE products SET stock = (SELECT COALESCE(SUM(stock), 0) FROM product_variants WHERE product_id = products.id AND active = 1)
+            WHERE id = (SELECT product_id FROM product_variants WHERE id = ?)`,
+        )
+        .bind(it.id)
+        .run();
     } else {
       await db
         .prepare("UPDATE products SET stock = ?, olist_synced_at = datetime('now') WHERE id = ?")

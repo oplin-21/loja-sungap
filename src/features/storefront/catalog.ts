@@ -125,7 +125,8 @@ export async function loadCatalogPage(
     options.searchParams.get('sort'),
     options.searchParams.get('dir'),
   );
-  const order = orderByClause(sort, dir);
+  // Com estoque primeiro (pedido do dono); dentro de cada grupo, a ordem escolhida.
+  const order = `CASE WHEN stock > 0 THEN 0 ELSE 1 END, ${orderByClause(sort, dir)}`;
 
   const [total, categories] = await Promise.all([countProducts(db), listCategories(db)]);
   const { page, offset, totalPages } = paginate(

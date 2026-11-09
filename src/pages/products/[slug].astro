@@ -64,7 +64,8 @@ if (loaded.backfillRelated) {
       };
 
       const update = (scroll) => {
-        const v = form.querySelector('input[name="variant_id"]:checked');
+        const sel = form.querySelector('select[name="variant_id"]');
+        const v = sel ? sel.selectedOptions[0] || null : form.querySelector('input[name="variant_id"]:checked');
         let cents = v ? Number(v.getAttribute('data-price')) : base;
         for (const e of form.querySelectorAll('input[name="extra"]:checked')) {
           cents += Number(e.getAttribute('data-price')) || 0;

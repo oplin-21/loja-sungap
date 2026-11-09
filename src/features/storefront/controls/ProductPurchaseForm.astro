@@ -38,38 +38,26 @@ const showAny = model.showAddToCart || model.showBuyNow;
         {model.variants.length > 0 && (
           <fieldset class="mb-6">
             <legend class="mb-2 text-xs uppercase tracking-widest text-muted">
-              {model.variantLabel || 'Option'}
+              {model.variantLabel || 'Opção'}
             </legend>
-            <div class="flex flex-col gap-2">
+            {/* Lista suspensa (pedido do dono): cada opção leva preço e foto da cor. */}
+            <select
+              name="variant_id"
+              required
+              class="w-full rounded-md border border-line bg-surface px-4 py-2.5 text-sm text-ink focus:border-brand focus:outline-none"
+            >
               {model.variants.map((variant) => (
-                <label
-                  class={`flex items-center justify-between gap-3 rounded-md border px-4 py-2.5 text-sm transition ${
-                    variant.soldOut
-                      ? 'cursor-not-allowed border-line text-faint'
-                      : 'cursor-pointer border-line hover:border-brand'
-                  }`}
+                <option
+                  value={variant.id}
+                  disabled={variant.soldOut}
+                  selected={variant.defaultSelected}
+                  data-price={variant.priceCents}
+                  data-image-id={variant.imageAnchor}
                 >
-                  <span class="flex items-center gap-3">
-                    <input
-                      type="radio"
-                      name="variant_id"
-                      value={variant.id}
-                      required
-                      disabled={variant.soldOut}
-                      checked={variant.defaultSelected}
-                      data-price={variant.priceCents}
-                      data-image-id={variant.imageAnchor}
-                      class="accent-brand"
-                    />
-                    <span>
-                      {variant.label}
-                      {variant.soldOut && ' — sold out'}
-                    </span>
-                  </span>
-                  <span class="tabular-nums text-muted">{variant.formattedPrice}</span>
-                </label>
+                  {variant.label} — {variant.formattedPrice}{variant.soldOut ? ' (esgotado)' : ''}
+                </option>
               ))}
-            </div>
+            </select>
           </fieldset>
         )}
 
