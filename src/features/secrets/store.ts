@@ -20,7 +20,9 @@ export type SecretName =
   | 'resend_api_key'
   | 'turnstile_secret_key'
   | 'lnbits_api_key'
-  | 'phoenixd_password';
+  | 'phoenixd_password'
+  | 'olist_api_token'
+  | 'melhorenvio_token';
 
 export const SECRET_NAMES: readonly SecretName[] = [
   'stripe_secret_key',
@@ -31,6 +33,8 @@ export const SECRET_NAMES: readonly SecretName[] = [
   'turnstile_secret_key',
   'lnbits_api_key',
   'phoenixd_password',
+  'olist_api_token',
+  'melhorenvio_token',
 ];
 
 /** D1 settings-row key holding the encrypted blob for a secret. */

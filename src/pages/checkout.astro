@@ -29,6 +29,9 @@ import {
 } from '../features/orders/reservations';
 import { reservationItems } from '../features/orders/reservationItems.ts';
 import { purgeStockProductCache } from '../features/cache/purge';
+import { getSecret } from '../features/secrets/store';
+import { getSetting } from '../features/settings/db';
+import { cotarFrete } from '../features/br/melhorEnvio';
 import {
   UFS,
   documentoValido,
@@ -235,7 +238,48 @@ if (submitted) {
     // Sem frete configurado (ou pedido sem item físico), a loja não inventa um
     // valor: o pedido segue com "Frete a combinar" e o time fecha a entrega.
     const shippingOn = effectiveShipping.enabled && shipment.shippingRequired;
-    const quote = shippingOn
+    // Melhor Envio configurado (token + CEP de origem): cotação real por CEP,
+    // com Correios e transportadoras. Tem prioridade sobre as zonas fixas.
+    const meToken = shipment.shippingRequired ? await getSecret(env.DB, 'melhorenvio_token') : null;
+    const meCep = meToken ? await getSetting(env.DB, 'melhorenvio_cep_origem') : null;
+    let meOpcoes: { label: string; amountCents: number }[] | null = null;
+    if (meToken && meCep) {
+      const semMedida = lines.filter(
+        (l) => !(l.product.length_cm && l.product.width_cm && l.product.height_cm) ||
+          !(l.variant?.weight_grams ?? l.product.weight_grams),
+      );
+      // Sem medida/peso cadastrado não há cotação: segue como "Frete a combinar".
+      if (semMedida.length === 0) {
+        try {
+          meOpcoes = await cotarFrete({
+            token: meToken,
+            sandbox: (await getSetting(env.DB, 'melhorenvio_sandbox')) === '1',
+            cepOrigem: meCep,
+            cepDestino: addr.postal,
+            itens: lines.map((l) => ({
+              id: l.product.public_id ?? String(l.product.id),
+              comprimento: Number(l.product.length_cm),
+              largura: Number(l.product.width_cm),
+              altura: Number(l.product.height_cm),
+              pesoKg: Number(l.variant?.weight_grams ?? l.product.weight_grams) / 1000,
+              valorCents: l.unitPriceCents,
+              quantidade: l.qty,
+            })),
+          });
+        } catch (err) {
+          console.error(JSON.stringify({ event: 'melhorenvio_quote_failed', message: (err as Error).message }));
+          meOpcoes = null; // cai para frete a combinar / zonas
+        }
+      }
+    }
+    const quote = meOpcoes && meOpcoes.length
+      ? {
+          options: meOpcoes,
+          omitted: [] as { reason: string }[],
+          missingWeight: [] as { name: string; productId: number }[],
+          shipmentWeightGrams: shipment.itemWeightGrams ?? null,
+        }
+      : shippingOn
       ? quoteShipping(effectiveShipping, {
           subtotalCents,
           country: addr.country,

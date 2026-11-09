@@ -3,6 +3,9 @@ import { env } from 'cloudflare:workers';
 import { sweepStaleNotifications } from './features/email/outbox';
 import { releaseExpiredReservations } from './features/orders/reservations';
 import { getSetting } from './features/settings/db';
+import { getSecret } from './features/secrets/store';
+import { rodadaOlist } from './features/olist/sync';
+import { getConfig } from './config';
 
 /**
  * Worker entrypoint.
@@ -47,6 +50,15 @@ async function runScheduledSweeps(): Promise<void> {
     }
   } catch (err) {
     console.error('Scheduled notification sweep failed:', err);
+  }
+
+  // Catálogo do Olist (somente leitura): uma rodada curta a cada cron.
+  try {
+    const marca = await getSetting(db, 'olist_marca');
+    const token = marca ? await getSecret(db, 'olist_api_token') : null;
+    if (marca && token) await rodadaOlist(db, env.BUCKET, token, marca, getConfig().currency);
+  } catch (err) {
+    console.error('Scheduled Olist sync failed:', err);
   }
 }
 

@@ -128,7 +128,10 @@ export async function loadProductDetail(
     const image = imageId == null ? undefined : gallery.find((g) => g.id === imageId);
     return image ? requirePublicId(image.public_id, image.id, 'product image') : '';
   };
-  const firstInStockIndex = variants.findIndex((v) => v.stock > 0);
+  // ?variant=var_… (link do Google Merchant) pré-seleciona aquela variação.
+  const pedida = options.searchParams.get('variant');
+  const pedidaIndex = pedida ? variants.findIndex((v) => v.public_id === pedida && v.stock > 0) : -1;
+  const firstInStockIndex = pedidaIndex >= 0 ? pedidaIndex : variants.findIndex((v) => v.stock > 0);
 
   const images: StorefrontGalleryImage[] = gallery.map((image, index) => {
     const hero = productImageSources(image.image_key, {

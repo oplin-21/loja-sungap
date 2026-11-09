@@ -54,6 +54,10 @@ export type SettingKey =
   | 'phoenixd_url' // phoenixd node URL (the password is in the vault)
   | 'opennode_api_url' // OpenNode API base override (testnet); absent = live default
   | 'infinitepay_handle' // InfiniteTag da conta InfinitePay que recebe; absent = InfinitePay desligada
+  | 'olist_marca' // marca do Olist que entra nesta loja (ex.: Sungap); absent = sincronização desligada
+  | 'olist_sync' // estado JSON da sincronização com o Olist
+  | 'melhorenvio_cep_origem' // CEP de onde sai a mercadoria
+  | 'melhorenvio_sandbox' // '1' = ambiente de teste do Melhor Envio
   | `enc:${string}`; // AES-GCM-encrypted secret (see features/secrets/store.ts), e.g. 'enc:stripe_secret_key'. Never loaded as plaintext into locals.
 
 /** The storefront features that can be flipped at runtime (default on). */
