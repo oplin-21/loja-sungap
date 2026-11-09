@@ -77,7 +77,9 @@ export function createInfinitePayProvider(db: D1Database, handle: string): Payme
         handle: tag,
         order_nsu: publicId,
         redirect_url: params.successUrl,
-        webhook_url: `${origin}/api/webhook/infinitepay`,
+        // Aviso de pagamento vai ao endereço sem a proteção anti-robô do domínio
+        // (o Bot Fight Mode da zona barra servidores como o da InfinitePay).
+        webhook_url: `${(await db.prepare("SELECT value FROM settings WHERE key = 'origem_avisos'").first<{ value: string }>())?.value ?? origin}/api/webhook/infinitepay`,
         items,
       };
       if (sel) {

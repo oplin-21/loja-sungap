@@ -502,7 +502,8 @@ if (!avisoChave) {
   avisoChave = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join('');
   await setSetting(env.DB, 'olist_aviso_chave', avisoChave);
 }
-const origemLoja = new URL(Astro.request.url).origin;
+// Avisos do Olist vão ao endereço sem a proteção anti-robô do domínio (ela barra o Olist).
+const origemLoja = (await lerConf('origem_avisos')) || new URL(Astro.request.url).origin;
 const olist = {
   marca: await lerConf('olist_marca'),
   idEcommerce: await lerConf('olist_id_ecommerce'),

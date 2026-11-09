@@ -58,6 +58,7 @@ export type SettingKey =
   | 'olist_sync' // estado JSON da sincronização com o Olist
   | 'olist_id_ecommerce' // número da integração "API do ERP" no Olist (pedido entra vinculado a ela)
   | 'olist_aviso_chave' // chave aleatória que autentica os avisos que o Olist manda para a loja
+  | 'origem_avisos' // endereço que recebe avisos de servidores (InfinitePay, Olist); fora da proteção anti-robô do domínio
   | 'olist_pedidos' // '1' = pedido pago sobe sozinho para o Olist
   | 'melhorenvio_cep_origem' // CEP de onde sai a mercadoria
   | 'melhorenvio_sandbox' // '1' = ambiente de teste do Melhor Envio
