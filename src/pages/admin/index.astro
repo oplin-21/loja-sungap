@@ -22,13 +22,13 @@ const onCfg = getConfig().orderNumber;
 
 const cards = [
   {
-    label: 'Net revenue',
+    label: 'Receita líquida',
     value: formatPrice(stats.revenue_cents),
     sub: stats.refunded_cents > 0 ? `${formatPrice(stats.refunded_cents)} refunded` : null,
   },
-  { label: 'Orders', value: String(stats.count), sub: null },
-  { label: 'Products', value: String(productCount), sub: null },
-  { label: 'Customers', value: String(customerCount), sub: null },
+  { label: 'Pedidos', value: String(stats.count), sub: null },
+  { label: 'Produtos', value: String(productCount), sub: null },
+  { label: 'Clientes', value: String(customerCount), sub: null },
 ];
 ---
 

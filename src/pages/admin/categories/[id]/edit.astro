@@ -32,7 +32,7 @@ const error = Astro.url.searchParams.get('error');
   <h1 class="mt-4 mb-6 text-2xl font-bold">Editar categoria</h1>
   <CategoryForm
     action={`/api/admin/categories/${category.public_id}`}
-    submitLabel="Save changes"
+    submitLabel="Salvar alterações"
     category={category}
     parentOptions={parentOptions}
     error={error}

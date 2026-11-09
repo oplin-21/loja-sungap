@@ -251,25 +251,25 @@ const listError = Astro.url.searchParams.get('error');
     selects={[
       {
         name: 'status',
-        label: 'Payment',
-        anyLabel: 'All payments',
+        label: 'Pagamento',
+        anyLabel: 'Todos os pagamentos',
         value: filters.status,
         options: ORDER_STATUS_OPTIONS,
       },
       {
         name: 'fulfillment',
-        label: 'Fulfillment',
-        anyLabel: 'Any fulfillment',
+        label: 'Envio',
+        anyLabel: 'Qualquer envio',
         value: filters.fulfillment,
         options: [
-          { value: 'unfulfilled', label: 'Unfulfilled' },
-          { value: 'fulfilled', label: 'Fulfilled' },
+          { value: 'unfulfilled', label: 'Não enviado' },
+          { value: 'fulfilled', label: 'Enviado' },
         ],
       },
       {
         name: 'method',
-        label: 'Method',
-        anyLabel: 'All methods',
+        label: 'Forma',
+        anyLabel: 'Todas as formas',
         value: filters.method,
         options: ORDER_METHOD_OPTIONS,
       },
@@ -305,7 +305,7 @@ const listError = Astro.url.searchParams.get('error');
       {
         orders.map((o) => (
           <tr class="border-b border-line">
-            <td data-label="Order #" class="py-3 pr-4">
+            <td data-label="Pedido nº" class="py-3 pr-4">
               <a href={`/admin/orders/${o.public_id}`} class="text-accent tabular-nums hover:underline">
                 #{o.id}
               </a>
@@ -323,7 +323,7 @@ const listError = Astro.url.searchParams.get('error');
                 {o.public_id ? truncatePublicId(o.public_id, 'order') : ''}
               </a>
             </td>
-            <td data-label="Email" class="py-3 pr-4">
+            <td data-label="E-mail" class="py-3 pr-4">
               {/* A long address is one unbreakable token, so left alone it sets
                   the table's width on its own and brings back the horizontal
                   scrollbar. Capped at sm+ only — the mobile card layout wraps
@@ -341,12 +341,12 @@ const listError = Astro.url.searchParams.get('error');
               )}
             </td>
             <td data-label="Total" class="py-3 pr-4 tabular-nums">{formatPrice(o.amount_total_cents, o.currency)}</td>
-            <td data-label="Status" class="py-3 pr-4">
+            <td data-label="Situação" class="py-3 pr-4">
               <span class="rounded-full bg-white px-2 py-0.5 text-xs uppercase tracking-wide text-gray-500 ring-1 ring-line">
                 {o.status}
               </span>
             </td>
-            <td data-label="Fulfillment" class="py-3 pr-4">
+            <td data-label="Envio" class="py-3 pr-4">
               <span
                 class={`rounded-full px-2 py-0.5 text-xs uppercase tracking-wide ring-1 ${
                   o.fulfillment_status === 'fulfilled'

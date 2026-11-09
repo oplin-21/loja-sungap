@@ -401,37 +401,37 @@ const reindexProcessed =
 const baseFeatureRows: { key: string; label: string; desc: string; on: boolean }[] = [
   {
     key: 'cart_enabled',
-    label: 'Cart & checkout',
+    label: 'Carrinho e pagamento',
     desc: 'Add to cart and checkout. Off makes the store a browse-only catalog.',
     on: settings.cartEnabled,
   },
   {
     key: 'buy_now_enabled',
-    label: 'Buy now',
+    label: 'Comprar agora',
     desc: 'Express instant-checkout button on product pages — works even with the cart off.',
     on: settings.buyNowEnabled,
   },
   {
     key: 'discounts_enabled',
-    label: 'Discount codes',
+    label: 'Cupons de desconto',
     desc: 'Show the promo-code field at checkout. Codes are created in the Stripe Dashboard.',
     on: settings.discountsEnabled ?? cfg.discounts.enabled,
   },
   {
     key: 'tax_enabled',
-    label: 'Automatic tax',
+    label: 'Imposto automático',
     desc: 'Charge sales tax / VAT via Stripe Tax — activate Stripe Tax in the Dashboard first.',
     on: settings.taxEnabled ?? cfg.tax.enabled,
   },
   {
     key: 'accounts_enabled',
-    label: 'Customer accounts',
+    label: 'Contas de clientes',
     desc: 'Passwordless (magic-link) customer login. Needs AUTH_SECRET + email configured.',
     on: settings.accountsEnabled ?? cfg.features.accounts,
   },
   {
     key: 'image_optimize',
-    label: 'Optimize images on upload',
+    label: 'Otimizar imagens no envio',
     desc: 'WebP-downscale product images via Cloudflare Images. Needs the IMAGES binding.',
     on: settings.imageOptimize ?? cfg.images.optimizeOnUpload,
   },
@@ -506,12 +506,12 @@ const turnstileReady =
 
 // Jump sub-nav targets.
 const sections = [
-  { id: 'general', label: 'General' },
-  { id: 'images', label: 'Images' },
-  { id: 'payments', label: 'Payments' },
-  { id: 'email', label: 'Email' },
-  { id: 'turnstile', label: 'Bot protection' },
-  { id: 'search', label: 'Search' },
+  { id: 'general', label: 'Geral' },
+  { id: 'images', label: 'Imagens' },
+  { id: 'payments', label: 'Pagamentos' },
+  { id: 'email', label: 'E-mail' },
+  { id: 'turnstile', label: 'Proteção contra robôs' },
+  { id: 'search', label: 'Buscar' },
   { id: 'build-time', label: 'Build-time' },
 ];
 ---
@@ -642,7 +642,7 @@ const sections = [
             <option value="" selected={homeChoice === ''}>Product list (default)</option>
             {
               homePages.length > 0 && (
-                <optgroup label="Page">
+                <optgroup label="Página">
                   {homePages.map((p) => (
                     <option value={`page:${p.public_id}`} selected={homeChoice === `page:${p.id}`}>
                       {p.title}
@@ -653,7 +653,7 @@ const sections = [
             }
             {
               homeProducts.length > 0 && (
-                <optgroup label="Product">
+                <optgroup label="Produto">
                   {homeProducts.map((p) => (
                     <option value={`product:${p.public_id}`} selected={homeChoice === `product:${p.id}`}>
                       {p.name}

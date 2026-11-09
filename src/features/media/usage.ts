@@ -138,7 +138,7 @@ export function usageLinks(usage: MediaUsage): UsageLink[] {
       ? [
           {
             href: '/admin/settings',
-            label: 'Store logo',
+            label: 'Logo da loja',
             kind: 'logo' as const,
             title: 'Change the logo in Settings',
           },

@@ -32,7 +32,7 @@ export interface PageLayoutPreset {
 
 export const PAGE_LAYOUTS = {
   standard: {
-    label: 'Standard',
+    label: 'Padrão',
     hint: 'Narrow column, left-aligned title. Best for policies, shipping, and returns.',
     measure: '48rem',
     titleAlign: 'left',
@@ -44,7 +44,7 @@ export const PAGE_LAYOUTS = {
     titleAlign: 'center',
   },
   wide: {
-    label: 'Wide',
+    label: 'Larga',
     hint: 'Full width, left-aligned title. Best for size charts, tables, and image grids.',
     measure: '72rem',
     titleAlign: 'left',

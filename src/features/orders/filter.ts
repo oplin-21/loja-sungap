@@ -34,10 +34,10 @@ const STATUS: Record<OrderStatusFilter, string> = {
 };
 
 export const ORDER_STATUS_OPTIONS: { value: OrderStatusFilter; label: string }[] = [
-  { value: 'paid', label: 'Paid' },
-  { value: 'partially_refunded', label: 'Partially refunded' },
-  { value: 'refunded', label: 'Refunded' },
-  { value: 'pending', label: 'Unpaid' },
+  { value: 'paid', label: 'Pago' },
+  { value: 'partially_refunded', label: 'Reembolso parcial' },
+  { value: 'refunded', label: 'Reembolsado' },
+  { value: 'pending', label: 'Não pago' },
 ];
 
 export const ORDER_METHOD_OPTIONS: { value: string; label: string }[] = [

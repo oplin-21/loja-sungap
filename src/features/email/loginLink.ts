@@ -7,8 +7,8 @@ export function loginLinkEmail(to: string, link: string, storeName: string): Ema
   const text = `Click to sign in to ${storeName}:\n\n${link}\n\nThis link expires in 15 minutes. If you didn't request it, ignore this email.`;
   const html = emailShell({
     storeName,
-    heading: 'Sign in',
-    subheading: 'This link expires in 15 minutes and can only be used once.',
+    heading: 'Entrar',
+    subheading: 'Este link vale por 15 minutos e só pode ser usado uma vez.',
     body:
       emailButton(link, 'Sign in') +
       `<p style="margin:0;font-size:12px;line-height:1.6;color:${PALETTE.muted};">

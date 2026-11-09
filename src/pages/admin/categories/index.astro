@@ -51,8 +51,8 @@ const menuRefs = await menuReferencesFor(env.DB, 'category', rows.map((r) => r.i
                 {c.name}
               </a>
             </td>
-            <td data-label="Slug" class="py-3 pr-4 text-gray-500">{c.slug}</td>
-            <td data-label="Products" class="py-3 pr-4 tabular-nums text-gray-500">{counts.get(c.id) ?? 0}</td>
+            <td data-label="Endereço da página" class="py-3 pr-4 text-gray-500">{c.slug}</td>
+            <td data-label="Produtos" class="py-3 pr-4 tabular-nums text-gray-500">{counts.get(c.id) ?? 0}</td>
             <td data-label="" class="py-3 text-right">
               <div class="flex justify-end gap-4 text-xs uppercase tracking-widest">
                 <a href={`/admin/categories/${c.public_id}/edit`} class="text-accent hover:underline">

@@ -37,11 +37,11 @@ const thumbCell = (
 /** Shipping / discount / tax / total, in the order they appear on a receipt. */
 function totalRows(order: Order, money: (cents: number) => string): TotalRow[] {
   return [
-    ...(order.shipping_cents > 0 ? [{ label: 'Shipping', amount: money(order.shipping_cents) }] : []),
+    ...(order.shipping_cents > 0 ? [{ label: 'Frete', amount: money(order.shipping_cents) }] : []),
     ...(order.discount_cents > 0
-      ? [{ label: 'Discount', amount: `&minus;${money(order.discount_cents)}` }]
+      ? [{ label: 'Desconto', amount: `&minus;${money(order.discount_cents)}` }]
       : []),
-    ...(order.tax_cents > 0 ? [{ label: 'Tax', amount: money(order.tax_cents) }] : []),
+    ...(order.tax_cents > 0 ? [{ label: 'Imposto', amount: money(order.tax_cents) }] : []),
     { label: 'Total', amount: money(order.amount_total_cents), strong: true },
   ];
 }
@@ -100,7 +100,7 @@ export function orderConfirmationEmail(
 
   const html = emailShell({
     storeName,
-    heading: 'Thanks for your order',
+    heading: 'Obrigado pelo seu pedido',
     subheading: `Order #${num} is confirmed. We'll email you again when it ships.`,
     body:
       emailItemsTable(
@@ -238,7 +238,7 @@ export function orderShippedEmail(
 
   const html = emailShell({
     storeName,
-    heading: 'Your order is on its way',
+    heading: 'Seu pedido está a caminho',
     subheading: `Order #${num} shipped.`,
     body:
       trackingHtml +
@@ -307,9 +307,9 @@ export function orderRefundedEmail(
   ].join('\n');
 
   const rows: TotalRow[] = [
-    { label: 'Refunded', amount: money(refundCents), strong: true },
-    ...(priorLine ? [{ label: 'Total refunded', amount: money(refundedCents) }] : []),
-    ...(full ? [] : [{ label: 'Still paid', amount: money(remaining) }]),
+    { label: 'Reembolsado', amount: money(refundCents), strong: true },
+    ...(priorLine ? [{ label: 'Total reembolsado', amount: money(refundedCents) }] : []),
+    ...(full ? [] : [{ label: 'Ainda pago', amount: money(remaining) }]),
   ];
 
   const html = emailShell({

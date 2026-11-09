@@ -20,7 +20,7 @@ interface Props {
   heading?: string;
 }
 
-const { eyebrow = 'Shop', heading = 'All products' } = Astro.props;
+const { eyebrow = 'Loja', heading = 'Todos os produtos' } = Astro.props;
 
 const model = await loadCatalogPage(env.DB, {
   base: Astro.url.pathname,

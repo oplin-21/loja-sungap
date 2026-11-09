@@ -74,7 +74,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
   </div>
   <ProductForm
     action={`/api/admin/products/${product.public_id}`}
-    submitLabel="Save changes"
+    submitLabel="Salvar alterações"
     product={product}
     categoryOptions={categoryOptions}
     selectedCategoryIds={selectedCategoryIds}
@@ -117,7 +117,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
         form above — it posts its own attach request, and a nested form would be
         invalid HTML. */}
     <div class="mb-6">
-      <MediaPicker id="product-gallery" label="Choose from Media" />
+      <MediaPicker id="product-gallery" label="Escolher da galeria" />
       <form
         method="POST"
         action={`/api/admin/products/${product.public_id}/images`}

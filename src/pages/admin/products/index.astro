@@ -75,19 +75,19 @@ const arrow = (col: string) => (sort === col ? (dir === 'asc' ? ' ↑' : ' ↓')
     count={matchCount}
     noun="product"
     hidden={{ sort: sort ?? undefined, dir: dir ?? undefined }}
-    search={{ name: 'q', value: filters.q, placeholder: 'Product name' }}
+    search={{ name: 'q', value: filters.q, placeholder: 'Nome do produto' }}
     selects={[
       {
         name: 'status',
-        label: 'Visibility',
-        anyLabel: 'All products',
+        label: 'Visibilidade',
+        anyLabel: 'Todos os produtos',
         value: filters.status,
         options: PRODUCT_STATUS_OPTIONS,
       },
       {
         name: 'stock',
-        label: 'Stock',
-        anyLabel: 'Any stock',
+        label: 'Estoque',
+        anyLabel: 'Qualquer estoque',
         value: filters.stock,
         options: PRODUCT_STOCK_OPTIONS,
       },
@@ -134,12 +134,12 @@ const arrow = (col: string) => (sort === col ? (dir === 'asc' ? ' ↑' : ' ↓')
                 <span class="font-medium">{p.name}</span>
               </a>
             </td>
-            <td data-label="Price" class="py-3 pr-4 tabular-nums">{formatPrice(p.price_cents)}</td>
-            <td data-label="Stock" class="py-3 pr-4 tabular-nums">{p.stock}</td>
-            <td data-label="Sold" class="py-3 pr-4 tabular-nums">
+            <td data-label="Preço" class="py-3 pr-4 tabular-nums">{formatPrice(p.price_cents)}</td>
+            <td data-label="Estoque" class="py-3 pr-4 tabular-nums">{p.stock}</td>
+            <td data-label="Vendidos" class="py-3 pr-4 tabular-nums">
               {p.sold > 0 ? p.sold : <span class="text-gray-300">0</span>}
             </td>
-            <td data-label="Active" class="py-3 pr-4">{p.active ? 'Yes' : <span class="text-gray-400">Não</span>}</td>
+            <td data-label="Ativo" class="py-3 pr-4">{p.active ? 'Sim' : <span class="text-gray-400">Não</span>}</td>
             <td data-label="" class="py-3 text-right">
               <div class="flex justify-end gap-4 text-xs uppercase tracking-widest">
                 <a

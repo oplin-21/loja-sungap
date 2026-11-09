@@ -664,9 +664,9 @@ const willEmailCustomer =
                 it.name
               )}
             </td>
-            <td data-label="Unit price" class="py-3 pr-4 tabular-nums">{formatPrice(it.price_cents, order.currency)}</td>
-            <td data-label="Qty" class="py-3 pr-4 tabular-nums">{it.quantity}</td>
-            <td data-label="Line total" class="py-3 text-right tabular-nums">
+            <td data-label="Preço unitário" class="py-3 pr-4 tabular-nums">{formatPrice(it.price_cents, order.currency)}</td>
+            <td data-label="Qtd" class="py-3 pr-4 tabular-nums">{it.quantity}</td>
+            <td data-label="Total da linha" class="py-3 text-right tabular-nums">
               {formatPrice(it.price_cents * it.quantity, order.currency)}
             </td>
           </tr>

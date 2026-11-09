@@ -62,7 +62,7 @@ const timeZone = Astro.locals.settings?.timeZone ?? getConfig().timeZone;
               </a>
             </td>
             <td data-label="Total" class="py-3 pr-4 tabular-nums">{formatPrice(o.amount_total_cents, o.currency)}</td>
-            <td data-label="Status" class="py-3 pr-4">{o.status}</td>
+            <td data-label="Situação" class="py-3 pr-4">{o.status}</td>
             <td data-label="When" class="py-3 text-gray-500">{formatDate(o.created_at, undefined, timeZone)}</td>
           </tr>
         ))

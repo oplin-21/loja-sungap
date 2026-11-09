@@ -31,7 +31,7 @@ export function guestLinkReissueEmail(
 
   const html = emailShell({
     storeName,
-    heading: 'Your new order link',
+    heading: 'Seu novo link do pedido',
     subheading: `A fresh link for order #${escapeHtml(num)}.`,
     body:
       `<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:${PALETTE.muted};">` +

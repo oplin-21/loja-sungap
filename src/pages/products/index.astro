@@ -21,6 +21,6 @@ const canonical = homeIsOverridden
   : new URL('/', publicOrigin(Astro.url.origin, env.CANONICAL_ORIGIN)).href;
 ---
 
-<Layout title="All products" canonical={canonical}>
+<Layout title="Todos os produtos" canonical={canonical}>
   <ProductList />
 </Layout>

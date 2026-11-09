@@ -536,8 +536,8 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
   const refreshEnds = (list: HTMLElement) => {
     const rows = [...list.children];
     rows.forEach((row, i) => {
-      const up = row.querySelector('button[aria-label="Move up"]') as HTMLButtonElement | null;
-      const down = row.querySelector('button[aria-label="Move down"]') as HTMLButtonElement | null;
+      const up = row.querySelector('button[aria-label="Mover para cima"]') as HTMLButtonElement | null;
+      const down = row.querySelector('button[aria-label="Mover para baixo"]') as HTMLButtonElement | null;
       if (up) up.disabled = i === 0;
       if (down) down.disabled = i === rows.length - 1;
     });

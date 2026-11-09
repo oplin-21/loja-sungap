@@ -62,9 +62,9 @@ const arrow = (col: string) => (sort === col ? (dir === 'asc' ? ' ↑' : ' ↓')
                 {c.email}
               </a>
             </td>
-            <td data-label="Orders" class="py-3 pr-4 tabular-nums">{c.orders}</td>
-            <td data-label="Lifetime value" class="py-3 pr-4 tabular-nums">{formatPrice(c.lifetime_cents)}</td>
-            <td data-label="Last order" class="py-3 text-gray-500">{formatDate(c.last_order, { dateStyle: 'medium' }, timeZone)}</td>
+            <td data-label="Pedidos" class="py-3 pr-4 tabular-nums">{c.orders}</td>
+            <td data-label="Total já comprado" class="py-3 pr-4 tabular-nums">{formatPrice(c.lifetime_cents)}</td>
+            <td data-label="Último pedido" class="py-3 text-gray-500">{formatDate(c.last_order, { dateStyle: 'medium' }, timeZone)}</td>
           </tr>
         ))
       }
