@@ -48,7 +48,7 @@ if (loaded.backfillRelated) {
     if (form instanceof HTMLFormElement && out instanceof HTMLElement) {
       const currency = (out.dataset.currency || 'usd').toUpperCase();
       const base = Number(out.dataset.base || '0');
-      const fmt = new Intl.NumberFormat('en-US', { style: 'currency', currency });
+      const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency });
       const divisor = 10 ** (fmt.resolvedOptions().maximumFractionDigits ?? 2);
 
       // Scroll the gallery carousel to the variant's linked image (if any). The

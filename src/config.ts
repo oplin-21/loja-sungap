@@ -305,9 +305,9 @@ export function formatDate(
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return value;
   try {
-    return new Intl.DateTimeFormat('en-US', { timeZone, ...opts }).format(d);
+    return new Intl.DateTimeFormat('pt-BR', { timeZone, ...opts }).format(d);
   } catch {
     // A bad deployment override should never break an order/admin page.
-    return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', ...opts }).format(d);
+    return new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC', ...opts }).format(d);
   }
 }

@@ -17,7 +17,7 @@ const { page, offset, totalPages } = paginate(Astro.url.searchParams, total, MED
 const { items, usage, baseUrl } = await loadMediaPage(MEDIA_PAGE_SIZE, offset);
 const hrefFor = (p: number) => queryHref('/admin/media', { page: p > 1 ? p : undefined });
 
-const dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' });
+const dateFmt = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' });
 const formatDate = (iso: string) => dateFmt.format(new Date(`${iso.replace(' ', 'T')}Z`));
 
 /** Legacy rows backfilled from R2 have no size — show nothing, not "0 B". */

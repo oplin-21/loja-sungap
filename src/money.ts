@@ -15,7 +15,7 @@
 /** Decimal places a currency uses (2 USD, 0 JPY, 3 BHD). */
 export function currencyDecimals(currency: string): number {
   return (
-    new Intl.NumberFormat('en-US', {
+    new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: currency.toUpperCase(),
     }).resolvedOptions().maximumFractionDigits ?? 2
@@ -53,7 +53,7 @@ export function formatMoney(cents: number, currency: string): string {
   const code = currency.toUpperCase();
   let formatter = priceFormatters.get(code);
   if (!formatter) {
-    formatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: code });
+    formatter = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: code });
     priceFormatters.set(code, formatter);
   }
   return formatter.format(toMajorUnits(cents, currency));

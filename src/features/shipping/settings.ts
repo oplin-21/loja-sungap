@@ -686,7 +686,7 @@ function amountToValue(minor: number, currency: string): string {
 function decimalsFor(currency: string): number {
   try {
     return (
-      new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() })
+      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: currency.toUpperCase() })
         .resolvedOptions().maximumFractionDigits ?? 2
     );
   } catch {
