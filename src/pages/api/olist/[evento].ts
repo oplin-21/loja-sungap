@@ -6,7 +6,7 @@ export const prerender = false;
 
 /**
  * Avisos que o Olist manda para a loja (modelo Nuvemshop):
- *   /api/olist/produtos?chave=…  → "Enviar para o e-commerce" no Olist: o produto entra na loja
+ *   /api/olist/produtos  → "Enviar para o e-commerce" no Olist: o produto entra na loja
  *   /api/olist/estoque?chave=…   → estoque mudou: a loja reconfere aquele item primeiro
  *   /api/olist/precos?chave=…    → preço mudou: a loja relê o produto
  *
@@ -55,8 +55,12 @@ function extrairIds(corpo: unknown): { ids: string[]; dados: Obj | null } {
 export const POST: APIRoute = async ({ request, params, url }) => {
   const evento = params.evento as Evento;
   if (!EVENTOS.includes(evento)) return new Response('evento desconhecido', { status: 404 });
+  // Sem chave por decisão do dono (09/11/2026): o aviso só pede para a loja RELER
+  // o produto na API do Olist — nada no corpo é confiado e nada é gravado no Olist.
+  // Chave antiga na URL continua aceita; chave errada é recusada.
   const chave = await getSetting(env.DB, 'olist_aviso_chave');
-  if (!chave || url.searchParams.get('chave') !== chave) return new Response('chave inválida', { status: 401 });
+  const enviada = url.searchParams.get('chave');
+  if (enviada && enviada !== chave) return new Response('chave inválida', { status: 401 });
 
   const texto = (await request.text()).slice(0, 200_000);
   let corpo: unknown = null;
