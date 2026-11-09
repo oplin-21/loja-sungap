@@ -62,14 +62,14 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
 <AdminLayout title={`Edit ${product.name}`} active="products">
   <a href="/admin/products" class="text-sm text-gray-500 hover:text-brand">&larr; Back to products</a>
   <div class="mt-4 mb-6 flex items-center justify-between gap-4">
-    <h1 class="text-2xl font-bold">Edit product</h1>
+    <h1 class="text-2xl font-bold">Editar produto</h1>
     <a
       href={`/products/${product.slug}`}
       target="_blank"
       rel="noopener"
       class="text-sm text-accent hover:underline"
     >
-      View on store ↗
+      Ver na loja ↗
     </a>
   </div>
   <ProductForm
@@ -87,8 +87,8 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
 
   <section id="gallery" class="mt-12 scroll-mt-20 border-t border-line pt-8">
     <div class="mb-4 flex items-baseline justify-between gap-3">
-      <h2 class="text-xs uppercase tracking-widest text-gray-400">Images</h2>
-      <span class="text-xs text-gray-400">Changes here save automatically</span>
+      <h2 class="text-xs uppercase tracking-widest text-gray-400">Imagens</h2>
+      <span class="text-xs text-gray-400">As alterações aqui são salvas automaticamente</span>
     </div>
 
     <form
@@ -109,7 +109,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
         type="submit"
         class="rounded-md border border-line px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand"
       >
-        Add images
+        Adicionar imagens
       </button>
     </form>
 
@@ -157,7 +157,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                   <input type="hidden" name="_action" value="move" />
                   <input type="hidden" name="direction" value="up" />
                   <input type="hidden" name="image_id" value={img.public_id} />
-                  <button type="submit" data-up aria-label="Move up" class="block px-1 hover:text-brand">
+                  <button type="submit" data-up aria-label="Mover para cima" class="block px-1 hover:text-brand">
                     ↑
                   </button>
                 </form>
@@ -165,7 +165,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                   <input type="hidden" name="_action" value="move" />
                   <input type="hidden" name="direction" value="down" />
                   <input type="hidden" name="image_id" value={img.public_id} />
-                  <button type="submit" data-down aria-label="Move down" class="block px-1 hover:text-brand">
+                  <button type="submit" data-down aria-label="Mover para baixo" class="block px-1 hover:text-brand">
                     ↓
                   </button>
                 </form>
@@ -183,7 +183,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                 />
                 <span
                   data-primary-badge
-                  title="Primary image"
+                  title="Imagem principal"
                   class="absolute -left-1.5 -top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-[11px] text-white ring-2 ring-paper"
                 >
                   ★
@@ -203,14 +203,14 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                   name="alt"
                   value={img.alt ?? ''}
                   draggable="false"
-                  placeholder="Alt text — describe the image"
+                  placeholder="Texto alternativo — descreva a imagem"
                   class="w-full border-b border-line bg-transparent py-1 text-sm focus:border-brand focus:outline-none"
                 />
                 <button
                   type="submit"
                   class="shrink-0 text-xs uppercase tracking-widest text-gray-400 hover:text-brand"
                 >
-                  Save
+                  Salvar
                 </button>
               </form>
 
@@ -219,14 +219,14 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                   <input type="hidden" name="_action" value="primary" />
                   <input type="hidden" name="image_id" value={img.public_id} />
                   <button type="submit" data-make-primary class="text-accent hover:underline">
-                    Make primary
+                    Tornar principal
                   </button>
                 </form>
                 <form data-js-action="delete" method="POST" action={`/api/admin/products/${product.public_id}/images`}>
                   <input type="hidden" name="_action" value="delete" />
                   <input type="hidden" name="image_id" value={img.public_id} />
                   <button type="submit" class="text-red-600 hover:underline">
-                    Delete
+                    Excluir
                   </button>
                 </form>
               </div>
@@ -239,26 +239,26 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
 
   <section id="options" class="mt-12 scroll-mt-20 border-t border-line pt-8">
     <div class="mb-5">
-      <h2 class="text-xs uppercase tracking-widest text-gray-400">Variants &amp; add-ons</h2>
+      <h2 class="text-xs uppercase tracking-widest text-gray-400">Variações e adicionais</h2>
       <p class="mt-1 max-w-prose text-xs text-gray-500">
-        Optional. <strong class="font-medium text-gray-700">Variants</strong> are pickable options
+        Opcional. <strong class="font-medium text-gray-700">Variações</strong> are pickable options
         with their own price &amp; stock (e.g. Size) — the buyer chooses one, and the variant becomes
-        the inventory unit. <strong class="font-medium text-gray-700">Add-ons</strong> are checkbox
+        the inventory unit. <strong class="font-medium text-gray-700">Adicionais</strong> are checkbox
         extras that add to the line price (e.g. Gift wrap), with no stock of their own. Everything
-        here saves together with the <strong class="font-medium text-gray-700">Save changes</strong>
+        here saves together with the <strong class="font-medium text-gray-700">Salvar alterações</strong>
         button at the top.
       </p>
     </div>
 
     {/* Variant group label (e.g. "Size") — submits with the product form. */}
     <label class="mb-8 flex max-w-xs flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-      Variant group label
+      Nome do grupo de variações
       <input
         form="product-form"
         type="text"
         name="variant_group_label"
         value={product.variant_label ?? ''}
-        placeholder="e.g. Size, Color"
+        placeholder="ex.: Tamanho, Cor"
         class="w-48 rounded-md border border-line bg-transparent px-3 py-1.5 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
       />
     </label>
@@ -266,7 +266,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
     {/* Variants — one inline blank row is always present (no-JS can add one per
         save); "+ Add variant" clones it for adding several at once. All inputs use
         form="product-form" so they submit with the product's Save changes. */}
-    <h3 class="mb-3 text-sm font-medium">Variants</h3>
+    <h3 class="mb-3 text-sm font-medium">Variações</h3>
     <div data-variant-rows data-default-price={major(product.price_cents)} class="space-y-3">
       {
         [...variants, null].map((v) => (
@@ -283,7 +283,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                   <button
                     type="button"
                     data-photo-trigger
-                    aria-label="Choose variant photo"
+                    aria-label="Escolher foto da variação"
                     class="relative block h-14 w-14 shrink-0 overflow-hidden rounded border border-line hover:border-brand"
                   >
                     <img
@@ -299,7 +299,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                         (sel || mainPhoto) && 'hidden',
                       ]}
                     >
-                      Add photo
+                      Adicionar foto
                     </span>
                   </button>
 
@@ -313,7 +313,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                         data-thumb=""
                         data-src={mainPhoto ?? ''}
                         aria-pressed={!v?.image_id ? 'true' : 'false'}
-                        title="Use the main product photo"
+                        title="Usar a foto principal do produto"
                         class:list={[
                           'relative flex h-12 w-12 items-center justify-center overflow-hidden rounded border border-line text-center text-[8px] uppercase leading-tight tracking-widest text-gray-400 hover:border-brand',
                           !v?.image_id && 'ring-2 ring-brand',
@@ -322,7 +322,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                         {mainPhoto ? (
                           <img src={mainPhoto} alt="" class="h-full w-full object-cover opacity-70" />
                         ) : null}
-                        <span class="absolute inset-0 flex items-center justify-center bg-white/60">Main</span>
+                        <span class="absolute inset-0 flex items-center justify-center bg-white/60">Principal</span>
                       </button>
                       {imageViews.map((img, idx) => (
                         <button
@@ -341,7 +341,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                       ))}
                       {images.length === 0 && (
                         <span class="px-1 py-2 text-[10px] normal-case text-gray-400">
-                          Add gallery images first
+                          Adicione imagens à galeria primeiro
                         </span>
                       )}
                     </div>
@@ -350,13 +350,13 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
               );
             })()}
             <label class="flex flex-col gap-1 text-[10px] uppercase tracking-widest text-gray-400">
-              Label
+              Rótulo
               <input
                 form="product-form"
                 type="text"
                 name="v_label"
                 value={v?.label ?? ''}
-                placeholder="e.g. Large"
+                placeholder="ex.: Grande"
                 class="w-40 rounded-md border border-line bg-transparent px-3 py-1.5 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
               />
             </label>
@@ -374,7 +374,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
               />
             </label>
             <label class="flex flex-col gap-1 text-[10px] uppercase tracking-widest text-gray-400">
-              Stock
+              Estoque
               <input
                 form="product-form"
                 type="number"
@@ -409,7 +409,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
                     ? formatWeightValue(product.weight_grams, weightUnit)
                     : 'inherits'
                 }
-                title="Blank inherits the product weight. Enter 0 for a weightless variant."
+                title="Em branco usa o peso do produto. Use 0 para variação sem peso."
                 class="w-24 rounded-md border border-line bg-transparent px-3 py-1.5 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
               />
             </label>
@@ -424,7 +424,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
               data-remove-row
               class="hidden pb-1.5 text-xs uppercase tracking-widest text-red-600 hover:underline"
             >
-              Remove
+              Remover
             </button>
           </div>
         ))
@@ -435,24 +435,24 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
       data-add-variant
       class="mt-3 mb-8 hidden rounded-md border border-line px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand"
     >
-      + Add variant
+      + Adicionar variação
     </button>
 
     {/* Add-ons — same single-save pattern as variants. */}
-    <h3 class="mb-3 text-sm font-medium">Add-ons</h3>
+    <h3 class="mb-3 text-sm font-medium">Adicionais</h3>
     <div data-extra-rows class="space-y-3">
       {
         [...extras, null].map((ex) => (
           <div data-extra-row data-blank={ex ? undefined : ''} class="flex flex-wrap items-end gap-3 border-b border-line pb-3">
             <input form="product-form" type="hidden" name="e_id" value={ex?.public_id ?? ''} />
             <label class="flex flex-col gap-1 text-[10px] uppercase tracking-widest text-gray-400">
-              Label
+              Rótulo
               <input
                 form="product-form"
                 type="text"
                 name="e_label"
                 value={ex?.label ?? ''}
-                placeholder="e.g. Gift wrap"
+                placeholder="ex.: Embalagem para presente"
                 class="w-48 rounded-md border border-line bg-transparent px-3 py-1.5 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
               />
             </label>
@@ -477,7 +477,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
               data-remove-row
               class="hidden pb-1.5 text-xs uppercase tracking-widest text-red-600 hover:underline"
             >
-              Remove
+              Remover
             </button>
           </div>
         ))
@@ -488,7 +488,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
       data-add-extra
       class="mt-3 hidden rounded-md border border-line px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand"
     >
-      + Add add-on
+      + Adicionar adicional
     </button>
 
     {/* Submits the product form too (via form="product-form"), so changes here can
@@ -499,7 +499,7 @@ const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).con
         form="product-form"
         class="rounded-md bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover"
       >
-        Save changes
+        Salvar alterações
       </button>
     </div>
   </section>

@@ -45,7 +45,7 @@ const { action, selects, search, hidden = {}, active, count, noun = 'result' } =
   {
     search && (
       <label class="flex flex-col gap-1">
-        <span class="text-xs uppercase tracking-widest text-faint">Search</span>
+        <span class="text-xs uppercase tracking-widest text-faint">Buscar</span>
         <input
           type="search"
           name={search.name}
@@ -81,7 +81,7 @@ const { action, selects, search, hidden = {}, active, count, noun = 'result' } =
     type="submit"
     class="rounded-md border border-line px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-muted hover:border-brand hover:text-brand"
   >
-    Apply
+    Aplicar
   </button>
 
   {
@@ -90,7 +90,7 @@ const { action, selects, search, hidden = {}, active, count, noun = 'result' } =
         href={action}
         class="py-1.5 text-xs uppercase tracking-widest text-faint hover:text-brand"
       >
-        Clear
+        Limpar
       </a>
     )
   }

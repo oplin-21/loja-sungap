@@ -57,7 +57,7 @@ const tools = [
 <AdminLayout title={`Edit ${page.title}`} active="pages">
   <a href="/admin/pages" class="text-sm text-gray-500 hover:text-brand">&larr; Back to pages</a>
   <div class="mt-4 mb-6 flex flex-wrap items-center justify-between gap-4">
-    <h1 class="font-serif text-3xl tracking-tight">Edit page</h1>
+    <h1 class="font-serif text-3xl tracking-tight">Editar página</h1>
     {
       page.published !== 0 && (
         <a
@@ -66,7 +66,7 @@ const tools = [
           rel="noopener"
           class="text-sm text-accent hover:underline"
         >
-          View on store ↗
+          Ver na loja ↗
         </a>
       )
     }
@@ -89,7 +89,7 @@ const tools = [
   {
     saved && !warning && (
       <p class="mb-6 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-        Saved.
+        Salvo.
       </p>
     )
   }
@@ -97,7 +97,7 @@ const tools = [
   <form method="POST" action={`/api/admin/pages/${page.public_id}`} data-page-form>
     <div class="flex flex-wrap gap-4">
       <label class="block flex-1 text-xs uppercase tracking-widest text-gray-400">
-        Title
+        Título
         <input
           type="text"
           name="title"
@@ -108,7 +108,7 @@ const tools = [
         />
       </label>
       <label class="block flex-1 text-xs uppercase tracking-widest text-gray-400">
-        Slug
+        Endereço da página
         <input
           type="text"
           name="slug"
@@ -128,7 +128,7 @@ const tools = [
         data-modes
         hidden
         role="group"
-        aria-label="Editor view"
+        aria-label="Modo do editor"
         class="flex items-center gap-1 border-b border-line px-2 py-2"
       >
         <button
@@ -145,7 +145,7 @@ const tools = [
           class="rounded px-3 py-1.5 text-xs uppercase tracking-widest text-gray-500"
           aria-pressed="false"
         >
-          Split
+          Dividido
         </button>
         <button
           type="button"
@@ -153,7 +153,7 @@ const tools = [
           class="rounded px-3 py-1.5 text-xs uppercase tracking-widest text-gray-500"
           aria-pressed="false"
         >
-          Preview
+          Prévia
         </button>
       </div>
 
@@ -217,7 +217,7 @@ const tools = [
           <div
             class="flex h-11 items-center justify-between border-b border-line px-4 text-xs uppercase tracking-widest text-gray-400"
           >
-            <span>Preview <span class="normal-case tracking-normal">· click to find the source</span></span>
+            <span>Prévia <span class="normal-case tracking-normal">· click to find the source</span></span>
             {/* Reserved space, so the row doesn't reflow each time it renders. */}
             <span data-preview-status class="text-gray-300"></span>
           </div>
@@ -258,17 +258,16 @@ const tools = [
     <div class="mt-6 flex flex-wrap items-center gap-4">
       <label class="flex items-center gap-2 text-sm text-gray-700">
         <input type="checkbox" name="published" checked={page.published !== 0} class="rounded" />
-        Published
+        Publicada
       </label>
       <button
         type="submit"
         class="rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
       >
-        Save
+        Salvar
       </button>
       <span class="text-xs text-gray-400">
-        Published pages appear in the footer and sitemap. Storefront caching means a change
-        can take up to a minute to appear.
+        Páginas publicadas aparecem no rodapé e no mapa do site. Uma mudança pode levar até um minuto para aparecer.
       </span>
     </div>
   </form>

@@ -65,7 +65,7 @@ const fillerCards = fillers.map((product) => buildProductCard(product, cardOptio
 
 <Layout title={q ? `Search: ${q}` : 'Search'}>
   <div class="mb-8">
-    <p class="text-xs uppercase tracking-[0.25em] text-muted">Search</p>
+    <p class="text-xs uppercase tracking-[0.25em] text-muted">Buscar</p>
     <h1 class="mt-2 font-serif text-4xl tracking-tight sm:text-5xl">
       {q ? q : 'Find something'}
     </h1>
@@ -76,8 +76,8 @@ const fillerCards = fillers.map((product) => buildProductCard(product, cardOptio
       type="search"
       name="q"
       value={q}
-      placeholder="Search products…"
-      aria-label="Search products"
+      placeholder="Buscar produtos…"
+      aria-label="Buscar produtos"
       autofocus={!q}
       class="w-full border-0 border-b border-line bg-transparent px-1 py-2 text-base transition-colors focus:border-brand focus:outline-none"
     />
@@ -87,12 +87,12 @@ const fillerCards = fillers.map((product) => buildProductCard(product, cardOptio
     q &&
       (autoCorrected ? (
         <p class="mb-8 text-sm text-muted">
-          No matches for “{q}” — showing results for{' '}
+          Nada encontrado para “{q}” — mostrando resultados para{' '}
           <strong class="font-medium text-ink">{suggestion}</strong>.
         </p>
       ) : products.length > 0 ? (
         <p class="mb-8 text-xs uppercase tracking-widest text-muted">
-          {total} result{total === 1 ? '' : 's'} for “{q}”
+          {total} result{total === 1 ? '' : 's'} para “{q}”
         </p>
       ) : null)
   }
@@ -111,7 +111,7 @@ const fillerCards = fillers.map((product) => buildProductCard(product, cardOptio
     fillers.length > 0 && (
       <>
         <p class="mb-8 mt-16 text-xs uppercase tracking-widest text-muted">
-          More from these categories
+          Mais destas categorias
         </p>
         <ul class="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-3">
           {fillerCards.map((card, i) => (
@@ -124,7 +124,7 @@ const fillerCards = fillers.map((product) => buildProductCard(product, cardOptio
 
   {
     q && products.length === 0 && (
-      <p class="text-muted">No products match “{q}”. Try a different word.</p>
+      <p class="text-muted">Nenhum produto corresponde a “{q}”. Tente outra palavra.</p>
     )
   }
 

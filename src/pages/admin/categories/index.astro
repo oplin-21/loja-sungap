@@ -16,14 +16,14 @@ const counts = await productCounts(env.DB);
 const menuRefs = await menuReferencesFor(env.DB, 'category', rows.map((r) => r.id));
 ---
 
-<AdminLayout title="Categories" active="categories">
+<AdminLayout title="Categorias" active="categories">
   <div class="mb-8 flex items-center justify-between">
-    <h1 class="font-serif text-3xl tracking-tight">Categories</h1>
+    <h1 class="font-serif text-3xl tracking-tight">Categorias</h1>
     <a
       href="/admin/categories/new"
       class="rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
     >
-      New category
+      Nova categoria
     </a>
   </div>
 
@@ -31,10 +31,10 @@ const menuRefs = await menuReferencesFor(env.DB, 'category', rows.map((r) => r.i
     <table class="admin-table w-full text-left text-sm sm:min-w-[40rem]">
     <thead>
       <tr class="border-b border-line text-xs uppercase tracking-widest text-gray-400">
-        <th class="py-3 pr-4 font-normal">Name</th>
-        <th class="py-3 pr-4 font-normal">Slug</th>
-        <th class="py-3 pr-4 font-normal">Products</th>
-        <th class="py-3 text-right font-normal">Actions</th>
+        <th class="py-3 pr-4 font-normal">Nome</th>
+        <th class="py-3 pr-4 font-normal">Endereço da página</th>
+        <th class="py-3 pr-4 font-normal">Produtos</th>
+        <th class="py-3 text-right font-normal">Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -56,7 +56,7 @@ const menuRefs = await menuReferencesFor(env.DB, 'category', rows.map((r) => r.i
             <td data-label="" class="py-3 text-right">
               <div class="flex justify-end gap-4 text-xs uppercase tracking-widest">
                 <a href={`/admin/categories/${c.public_id}/edit`} class="text-accent hover:underline">
-                  Edit
+                  Editar
                 </a>
                 <form
                   method="POST"
@@ -69,7 +69,7 @@ const menuRefs = await menuReferencesFor(env.DB, 'category', rows.map((r) => r.i
                 >
                   <input type="hidden" name="_action" value="delete" />
                   <button type="submit" class="text-red-600 hover:underline">
-                    Delete
+                    Excluir
                   </button>
                 </form>
               </div>
@@ -81,7 +81,7 @@ const menuRefs = await menuReferencesFor(env.DB, 'category', rows.map((r) => r.i
         rows.length === 0 && (
           <tr>
             <td colspan="4" class="py-8 text-center text-gray-400">
-              No categories yet.
+              Nenhuma categoria ainda.
             </td>
           </tr>
         )

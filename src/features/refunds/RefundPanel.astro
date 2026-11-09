@@ -58,7 +58,7 @@ const dollars = (cents: number) => (cents / 100).toFixed(2);
 
 <section class="mb-8 rounded-lg border border-line">
   <div class="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
-    <h2 class="font-serif text-lg tracking-tight">Refunds</h2>
+    <h2 class="font-serif text-lg tracking-tight">Reembolsos</h2>
     {
       state !== 'none' && (
         <span
@@ -97,7 +97,7 @@ const dollars = (cents: number) => (cents / 100).toFixed(2);
 
   <dl class="grid grid-cols-2 gap-x-8 gap-y-3 px-5 py-4 text-sm sm:grid-cols-3">
     <div>
-      <dt class="text-xs uppercase tracking-widest text-faint">Order total</dt>
+      <dt class="text-xs uppercase tracking-widest text-faint">Total do pedido</dt>
       <dd class="tabular-nums">{formatPrice(order.amount_total_cents, order.currency)}</dd>
     </div>
     {
@@ -121,15 +121,15 @@ const dollars = (cents: number) => (cents / 100).toFixed(2);
       )
     }
     <div>
-      <dt class="text-xs uppercase tracking-widest text-faint">Total refunded</dt>
+      <dt class="text-xs uppercase tracking-widest text-faint">Total reembolsado</dt>
       <dd class="font-medium tabular-nums">{formatPrice(order.refunded_cents, order.currency)}</dd>
     </div>
     <div>
-      <dt class="text-xs uppercase tracking-widest text-faint">Refundable left</dt>
+      <dt class="text-xs uppercase tracking-widest text-faint">Ainda reembolsável</dt>
       <dd class="tabular-nums">{formatPrice(remaining, order.currency)}</dd>
     </div>
     <div>
-      <dt class="text-xs uppercase tracking-widest text-faint">Net</dt>
+      <dt class="text-xs uppercase tracking-widest text-faint">Líquido</dt>
       <dd class="font-medium tabular-nums">
         {formatPrice(order.amount_total_cents - order.refunded_cents, order.currency)}
       </dd>
@@ -211,7 +211,7 @@ const dollars = (cents: number) => (cents / 100).toFixed(2);
               type="submit"
               class="rounded-md bg-red-600 px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-red-700"
             >
-              Refund {formatPrice(remaining, order.currency)} through provider
+              Reembolsar {formatPrice(remaining, order.currency)} through provider
             </button>
             <p class="mt-2 text-xs text-muted">
               Sends the money back. For a partial refund, use your provider’s dashboard — it
@@ -235,14 +235,14 @@ const dollars = (cents: number) => (cents / 100).toFixed(2);
                 max={dollars(remaining)}
                 value={dollars(remaining)}
                 required
-                aria-label="Refund amount"
+                aria-label="Valor do reembolso"
                 class="w-28 rounded-md border border-line px-2 py-1.5 text-sm tabular-nums"
               />
               <input
                 type="text"
                 name="note"
                 placeholder="How it was sent (internal)"
-                aria-label="Internal note"
+                aria-label="Observação interna"
                 class="min-w-48 flex-1 rounded-md border border-line px-2 py-1.5 text-sm"
               />
               <button

@@ -516,8 +516,8 @@ const sections = [
 ];
 ---
 
-<AdminLayout title="Settings" active="settings">
-  <h1 class="mb-4 font-serif text-3xl tracking-tight">Settings</h1>
+<AdminLayout title="Configurações" active="settings">
+  <h1 class="mb-4 font-serif text-3xl tracking-tight">Configurações</h1>
 
   {/* Sticky jump sub-nav — scales the single page without splitting into routes. */}
   <nav
@@ -549,16 +549,16 @@ const sections = [
 
   {/* ── General: store identity + storefront features (runtime) ───────────── */}
   <section id="general" class="scroll-mt-16">
-    <h2 class="mb-2 text-lg font-bold">General</h2>
+    <h2 class="mb-2 text-lg font-bold">Geral</h2>
     <p class="mb-4 text-sm text-gray-500">
-      Store identity and storefront features — apply immediately, no redeploy.
+      Identidade e recursos da loja — valem na hora.
     </p>
 
     <form method="POST" class="mb-4 rounded-lg border border-gray-200 bg-white p-4">
       <input type="hidden" name="_action" value="save_store" />
       <div class="flex flex-wrap items-end gap-3">
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          Store name
+          Nome da loja
           <input
             type="text"
             name="store_name"
@@ -567,14 +567,14 @@ const sections = [
           />
         </label>
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          Store time zone
+          Fuso horário da loja
           <input
             type="text"
             name="time_zone"
             value={timeZone}
             required
             list="tz-list"
-            placeholder="Search e.g. America/New_York"
+            placeholder="Buscar, ex.: America/Sao_Paulo"
             class="w-64 rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
           />
           <datalist id="tz-list">
@@ -590,7 +590,7 @@ const sections = [
         type="submit"
         class="mt-4 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
       >
-        Save
+        Salvar
       </button>
     </form>
 
@@ -603,7 +603,7 @@ const sections = [
         >
           {
             logoUrl ? (
-              <img src={logoUrl} alt="Current logo" class="max-h-10 max-w-full object-contain" />
+              <img src={logoUrl} alt="Logo atual" class="max-h-10 max-w-full object-contain" />
             ) : (
               <span class="font-serif text-lg tracking-tight text-gray-500">{storeName}</span>
             )
@@ -619,7 +619,7 @@ const sections = [
               data-logo-remove
               class="rounded-md border border-gray-300 px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand"
             >
-              Remove logo
+              Remover logo
             </button>
           )
         }
@@ -632,7 +632,7 @@ const sections = [
 
     <form method="POST" class="mb-4 rounded-lg border border-gray-200 bg-white p-4">
       <input type="hidden" name="_action" value="save_home" />
-      <p class="mb-3 text-xs uppercase tracking-widest text-gray-400">Home page</p>
+      <p class="mb-3 text-xs uppercase tracking-widest text-gray-400">Página inicial</p>
       <div class="flex flex-wrap items-end gap-3">
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
           <span class="sr-only">What / shows</span>
@@ -681,7 +681,7 @@ const sections = [
             and no menu links to it — shoppers currently have no way to reach your catalog. Add
             a Catalog item in{' '}
             <a href="/admin/navigation" class="underline hover:text-brand">
-              Navigation
+              Menu da loja
             </a>
             .
           </p>
@@ -697,7 +697,7 @@ const sections = [
         type="submit"
         class="mt-4 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
       >
-        Save
+        Salvar
       </button>
     </form>
 
@@ -705,13 +705,13 @@ const sections = [
       <input type="hidden" name="_action" value="save_announcement" />
       <div class="flex flex-wrap items-end gap-3">
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          Announcement bar
+          Barra de aviso
           <input
             type="text"
             name="announcement"
             value={announcement}
             maxlength="200"
-            placeholder="e.g. Free shipping on orders over $50"
+            placeholder="ex.: Frete grátis acima de R$ 300"
             class="w-80 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
           />
         </label>
@@ -721,21 +721,19 @@ const sections = [
             type="text"
             name="announcement_href"
             value={announcementHref}
-            placeholder="e.g. /categories/sale"
+            placeholder="ex.: /categories/promocao"
             class="w-56 max-w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
           />
         </label>
       </div>
       <p class="mt-3 text-xs text-gray-400">
-        Shown above the header on every storefront page. Leave the message empty to hide the
-        bar. Storefront pages are cached briefly, so a change can take about a minute to
-        appear everywhere.
+        Aparece acima do cabeçalho em todas as páginas da loja. Deixe a mensagem vazia para esconder a barra. Pode levar cerca de um minuto para aparecer.
       </p>
       <button
         type="submit"
         class="mt-4 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
       >
-        Save
+        Salvar
       </button>
     </form>
 
@@ -746,7 +744,7 @@ const sections = [
         (forms always re-render converted from grams). */}
     <div class="mb-4 rounded-lg border border-gray-200 bg-white px-4 py-4">
       <a href="/admin/shipping" class="group block">
-        <p class="font-medium group-hover:text-brand">Shipping</p>
+        <p class="font-medium group-hover:text-brand">Frete</p>
         <p class="text-xs text-gray-500">
           {effectiveShipping.enabled ? 'On' : 'Off'} ·{' '}
           {effectiveShipping.zones.length}{' '}
@@ -758,7 +756,7 @@ const sections = [
         <input type="hidden" name="_action" value="save_weight_unit" />
         <div class="flex flex-wrap items-end gap-3">
           <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-            Weight unit
+            Unidade de peso
             <select
               name="weight_unit"
               class="w-24 rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
@@ -778,7 +776,7 @@ const sections = [
           type="submit"
           class="mt-4 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
         >
-          Save
+          Salvar
         </button>
       </form>
     </div>
@@ -798,7 +796,7 @@ const sections = [
         <SecretField name="shippo_api_key" label="API token" hint="shippo_live_… or shippo_test_…" storedInD1={inD1('shippo_api_key')} vault={vault} />
         {vault && (
           <button type="submit" class="mt-1 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover">
-            Save
+            Salvar
           </button>
         )}
       </form>
@@ -838,7 +836,7 @@ const sections = [
                 </form>
               ) : (
                 <span class="shrink-0 text-xs uppercase tracking-widest text-gray-400">
-                  Unavailable
+                  Indisponível
                 </span>
               )
             }
@@ -850,7 +848,7 @@ const sections = [
 
   {/* ── Images (runtime delivery selector) ───────────────────────────────── */}
   <section id="images" class="mt-10 scroll-mt-16">
-    <h2 class="mb-2 text-lg font-bold">Images</h2>
+    <h2 class="mb-2 text-lg font-bold">Imagens</h2>
     <p class="mb-4 text-sm text-gray-500">
       Choose how product images are delivered. This affects existing and new uploads without
       changing the files stored in R2.
@@ -859,7 +857,7 @@ const sections = [
     <form method="POST" class="mb-10 rounded-lg border border-gray-200 bg-white p-4">
       <input type="hidden" name="_action" value="set_image_delivery" />
       <fieldset class="space-y-3">
-        <legend class="sr-only">Image delivery</legend>
+        <legend class="sr-only">Entrega de imagens</legend>
         <label class="flex cursor-pointer items-start gap-3 rounded-md border border-line p-3">
           <input
             type="radio"
@@ -869,7 +867,7 @@ const sections = [
             class="mt-1 accent-brand"
           />
           <span>
-            <span class="block font-medium">Original images</span>
+            <span class="block font-medium">Imagens originais</span>
             <span class="block text-xs text-gray-500">
               Serve uploaded files unchanged. No transformation usage or additional setup.
             </span>
@@ -895,7 +893,7 @@ const sections = [
               Cloudflare on-demand
               {!onDemandImagesReady && (
                 <span class="ml-2 text-xs uppercase tracking-widest text-amber-700">
-                  Unavailable
+                  Indisponível
                 </span>
               )}
             </span>
@@ -919,14 +917,14 @@ const sections = [
           type="submit"
           class="rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
         >
-          Save image delivery
+          Salvar entrega de imagens
         </button>
         <p class="text-xs text-gray-400">
           Saving purges affected public pages; a 10-minute TTL bounds a transient purge failure.
         </p>
       </div>
       <p class="mt-3 text-xs text-gray-400">
-        This controls delivery. <strong class="font-medium text-gray-500">Optimize images on upload</strong>
+        This controls delivery. <strong class="font-medium text-gray-500">Otimizar imagens no envio</strong>
         in General is a separate option that changes newly stored source files.
       </p>
     </form>
@@ -934,7 +932,7 @@ const sections = [
 
   {/* ── Payments (keys + config grouped per method) ──────────────────────── */}
   <section id="payments" class="mt-10 scroll-mt-16">
-    <h2 class="mb-2 text-lg font-bold">Payments</h2>
+    <h2 class="mb-2 text-lg font-bold">Pagamentos</h2>
     <p class="mb-4 text-sm text-gray-500">
       Each method's config and keys are grouped together below. A method goes live once its key
       (and, for Lightning, its node URL) is set; Demo is always available. Keys are stored
@@ -955,7 +953,7 @@ const sections = [
     <form method="POST" class="mb-6 rounded-lg border border-gray-200 bg-white p-4">
       <input type="hidden" name="_action" value="save_default" />
       <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-        Default rail
+        Pagamento padrão
         <select
           name="payment_provider"
           class="w-48 rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
@@ -981,7 +979,7 @@ const sections = [
         disabled={!pmRows.some((row) => row.enabled)}
         class="mt-4 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:bg-gray-300"
       >
-        Save
+        Salvar
       </button>
     </form>
 
@@ -1003,7 +1001,7 @@ const sections = [
           <SecretField name="stripe_webhook_secret" label="Webhook signing secret" hint="whsec_…" storedInD1={inD1('stripe_webhook_secret')} vault={vault} />
           {vault && (
             <button type="submit" class="mt-1 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover">
-              Save
+              Salvar
             </button>
           )}
         </form>
@@ -1055,7 +1053,7 @@ const sections = [
           </div>
           {vault && (
             <button type="submit" class="mt-1 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover">
-              Save
+              Salvar
             </button>
           )}
         </form>
@@ -1080,7 +1078,7 @@ const sections = [
           </label>
           <SecretField name="opennode_api_key" label="API key" hint="from the OpenNode dashboard" storedInD1={inD1('opennode_api_key')} vault={vault} />
           <button type="submit" class="mt-1 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover">
-            Save
+            Salvar
           </button>
         </form>
       </div>
@@ -1089,7 +1087,7 @@ const sections = [
       <div class="rounded-lg border border-gray-200 bg-white p-4">
         <div class="flex items-center justify-between gap-3">
           <div>
-            <p class="font-medium">Demo checkout</p>
+            <p class="font-medium">Pagamento de demonstração</p>
             <p class="text-xs text-gray-500">
               Always available — reserves stock and places a real, demo-tagged order (no charge).
             </p>
@@ -1103,9 +1101,9 @@ const sections = [
 
   {/* ── Email (runtime config + vault key) ───────────────────────────────── */}
   <section id="email" class="mt-10 scroll-mt-16">
-    <h2 class="mb-2 text-lg font-bold">Email</h2>
+    <h2 class="mb-2 text-lg font-bold">E-mail</h2>
     <p class="mb-4 text-sm text-gray-500">
-      Order-confirmation and customer-login email. <strong>Resend</strong> works on the Workers
+      E-mail de confirmação de pedido e de acesso do cliente. <strong>Resend</strong> works on the Workers
       free plan; <strong>Cloudflare</strong> uses the <code>send_email</code> binding (paid plan).
       Sending to real customers needs a verified sender domain. Off or unconfigured = no-op (the
       on-page order confirmation still shows).
@@ -1122,16 +1120,16 @@ const sections = [
           disabled={email.provider === 'cloudflare' && !emailBindingReady}
           class="size-4"
         />
-        <span class="font-medium">Send email</span>
+        <span class="font-medium">Enviar e-mail</span>
         {
           email.provider === 'cloudflare' && !emailBindingReady && (
-            <span class="text-xs uppercase tracking-widest text-gray-400">Unavailable</span>
+            <span class="text-xs uppercase tracking-widest text-gray-400">Indisponível</span>
           )
         }
       </label>
       <div class="flex flex-wrap gap-4">
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          Provider
+          Provedor
           <select
             name="email_provider"
             data-email-provider
@@ -1148,7 +1146,7 @@ const sections = [
           </select>
         </label>
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          From address
+          E-mail do remetente
           <input
             type="email"
             name="email_from"
@@ -1158,7 +1156,7 @@ const sections = [
           />
         </label>
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          From name
+          Nome do remetente
           <input
             type="text"
             name="email_from_name"
@@ -1168,7 +1166,7 @@ const sections = [
           />
         </label>
         <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-          New-order alerts to
+          Avisos de novo pedido para
           <input
             type="email"
             name="email_notify_to"
@@ -1204,14 +1202,14 @@ const sections = [
         type="submit"
         class="rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
       >
-        Save
+        Salvar
       </button>
     </form>
 
     {/* Send a test email using the SAVED config (save first, then test). Posts to its
         own endpoint, so the section-save handler ignores it. */}
     <form method="POST" action="/api/admin/email/test" data-email-test class="mb-10 flex flex-wrap items-center gap-2">
-      <label class="text-xs uppercase tracking-widest text-gray-400">Send test email to</label>
+      <label class="text-xs uppercase tracking-widest text-gray-400">Enviar e-mail de teste para</label>
       <input
         type="email"
         name="test_to"
@@ -1224,7 +1222,7 @@ const sections = [
         disabled={!email.enabled || !selectedEmailReady}
         class="rounded-md border border-line px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand disabled:cursor-not-allowed disabled:text-gray-300"
       >
-        Send test
+        Enviar teste
       </button>
       <span data-email-test-result class="text-xs font-medium"></span>
     </form>
@@ -1232,7 +1230,7 @@ const sections = [
 
   {/* ── Bot protection (Turnstile) ───────────────────────────────────────── */}
   <section id="turnstile" class="mt-10 scroll-mt-16">
-    <h2 class="mb-2 text-lg font-bold">Bot protection</h2>
+    <h2 class="mb-2 text-lg font-bold">Proteção contra robôs</h2>
     <p class="mb-4 text-sm text-gray-500">
       Cloudflare Turnstile challenge on admin login and customer account sign-in.
       Off by default. Needs a <a href="https://dash.cloudflare.com/?to=/:account/turnstile" class="text-accent underline">Turnstile widget</a>
@@ -1253,7 +1251,7 @@ const sections = [
         <span class="font-medium">Enable Turnstile</span>
         {
           !vault ? (
-            <span class="text-xs uppercase tracking-widest text-gray-400">Unavailable</span>
+            <span class="text-xs uppercase tracking-widest text-gray-400">Indisponível</span>
           ) : !turnstileReady ? (
             <span class="text-xs text-amber-700">Add both keys before enabling</span>
           ) : null
@@ -1275,14 +1273,14 @@ const sections = [
         type="submit"
         class="rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
       >
-        Save
+        Salvar
       </button>
     </form>
   </section>
 
   {/* ── Search (runtime toggle) ──────────────────────────────────────────── */}
   <section id="search" class="mt-10 scroll-mt-16">
-    <h2 class="mb-2 text-lg font-bold">Search</h2>
+    <h2 class="mb-2 text-lg font-bold">Buscar</h2>
     <p class="mb-4 text-sm text-gray-500">
       Keyword search (SQLite FTS5) works out of the box. Switch on semantic search to also
       match by meaning using Workers AI + Vectorize — applies immediately, no redeploy.
@@ -1290,7 +1288,7 @@ const sections = [
     <div class="mb-10 overflow-hidden rounded-lg border border-gray-200 bg-white">
       <div class="flex items-center justify-between gap-4 px-4 py-4">
         <div class="min-w-0">
-          <p class="font-medium">Semantic search</p>
+          <p class="font-medium">Busca por significado</p>
           {
             vectorBindingsReady ? (
               <p class="text-xs text-gray-500">
@@ -1332,7 +1330,7 @@ const sections = [
               </button>
             </form>
           ) : (
-            <span class="shrink-0 text-xs uppercase tracking-widest text-gray-400">Unavailable</span>
+            <span class="shrink-0 text-xs uppercase tracking-widest text-gray-400">Indisponível</span>
           )
         }
       </div>
@@ -1371,21 +1369,21 @@ const sections = [
     </p>
     <dl class="divide-y divide-gray-100 overflow-hidden rounded-lg border border-gray-200 bg-white">
       <div class="grid grid-cols-3 gap-4 px-4 py-4">
-        <dt class="font-medium">Currency</dt>
+        <dt class="font-medium">Moeda</dt>
         <dd class="col-span-2">
           <p class="mb-1">{currency.toUpperCase()} — e.g. {formatPrice(2500)}</p>
           <p class="text-sm text-gray-500">
-            Override <code>currency</code> in <code>src/store.config.ts</code>. Drives all price formatting,
+            Substituir <code>currency</code> in <code>src/store.config.ts</code>. Drives all price formatting,
             the new-product default, and checkout.
           </p>
         </dd>
       </div>
       <div class="grid grid-cols-3 gap-4 px-4 py-4">
-        <dt class="font-medium">Favicon</dt>
+        <dt class="font-medium">Ícone do site</dt>
         <dd class="col-span-2 flex items-start gap-3">
-          <img src="/favicon.svg" alt="Current favicon" width="40" height="40" class="h-10 w-10 rounded" />
+          <img src="/favicon.svg" alt="Ícone atual" width="40" height="40" class="h-10 w-10 rounded" />
           <p class="text-sm text-gray-500">
-            Replace <code>public/favicon.svg</code> and regenerate <code>public/favicon.ico</code>
+            Substituir <code>public/favicon.svg</code> and regenerate <code>public/favicon.ico</code>
             for clients that still request the legacy icon.
           </p>
         </dd>

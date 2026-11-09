@@ -44,20 +44,19 @@ if (Astro.request.method === 'POST') {
 }
 ---
 
-<Layout title="Sign in">
+<Layout title="Entrar">
   <div class="mx-auto max-w-sm py-10">
-    <h1 class="mb-2 font-serif text-3xl tracking-tight sm:text-4xl">Sign in</h1>
+    <h1 class="mb-2 font-serif text-3xl tracking-tight sm:text-4xl">Entrar</h1>
 
     {
       sent ? (
         <p class="rounded-md border border-line bg-surface px-4 py-3 text-sm text-muted">
-          Check your email — we sent a one-time sign-in link. It expires in 15 minutes.
+          Confira seu e-mail — enviamos um link de acesso de uso único. Ele vale por 15 minutos.
         </p>
       ) : (
         <Fragment>
           <p class="mb-5 text-sm text-muted">
-            Enter your email and we'll send a sign-in link — no password needed. Use the address
-            from your orders to see your order history.
+            Informe seu e-mail e enviaremos um link de acesso — sem senha. Use o e-mail dos seus pedidos para ver seu histórico.
           </p>
           {error && (
             <p class="mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -81,7 +80,7 @@ if (Astro.request.method === 'POST') {
               type="submit"
               class="w-full rounded-md bg-brand px-4 py-2.5 font-medium text-on-brand hover:bg-brand-hover"
             >
-              Send sign-in link
+              Enviar link de acesso
             </button>
           </form>
         </Fragment>

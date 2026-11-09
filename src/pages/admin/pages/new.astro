@@ -4,9 +4,9 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 const error = Astro.url.searchParams.get('error');
 ---
 
-<AdminLayout title="New page" active="pages">
+<AdminLayout title="Nova página" active="pages">
   <a href="/admin/pages" class="text-sm text-gray-500 hover:text-brand">&larr; Back to pages</a>
-  <h1 class="mt-4 mb-6 font-serif text-3xl tracking-tight">New page</h1>
+  <h1 class="mt-4 mb-6 font-serif text-3xl tracking-tight">Nova página</h1>
 
   {
     error && (
@@ -20,7 +20,7 @@ const error = Astro.url.searchParams.get('error');
       editor. Media can only be attached to a page that already has an id. */}
   <form method="POST" action="/api/admin/pages" class="max-w-xl">
     <label class="block text-xs uppercase tracking-widest text-gray-400">
-      Title
+      Título
       <input
         type="text"
         name="title"
@@ -32,7 +32,7 @@ const error = Astro.url.searchParams.get('error');
     </label>
 
     <label class="mt-4 block text-xs uppercase tracking-widest text-gray-400">
-      URL slug <span class="normal-case tracking-normal text-gray-400">(optional)</span>
+      Endereço da página <span class="normal-case tracking-normal text-gray-400">(optional)</span>
       <input
         type="text"
         name="slug"
@@ -40,7 +40,7 @@ const error = Astro.url.searchParams.get('error');
         class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal text-gray-900 focus:border-brand focus:outline-none"
       />
       <span class="mt-1 block normal-case tracking-normal text-gray-400">
-        Leave blank to build it from the title. The page will live at /pages/&lt;slug&gt;.
+        Deixe em branco para gerar a partir do título. A página ficará em /pages/&lt;slug&gt;.
       </span>
     </label>
 
@@ -48,7 +48,7 @@ const error = Astro.url.searchParams.get('error');
       type="submit"
       class="mt-6 rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover"
     >
-      Create draft
+      Criar rascunho
     </button>
   </form>
 </AdminLayout>

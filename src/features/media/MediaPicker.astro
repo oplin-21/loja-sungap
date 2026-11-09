@@ -53,15 +53,15 @@ const {
 
   <dialog
     data-picker-dialog
-    aria-label="Choose an image"
+    aria-label="Escolher imagem"
     class="w-[min(56rem,92vw)] rounded-md border border-line p-0 backdrop:bg-black/40"
   >
     <div class="flex items-center justify-between border-b border-line px-5 py-4">
-      <h2 class="font-serif text-xl tracking-tight">Choose an image</h2>
+      <h2 class="font-serif text-xl tracking-tight">Escolher imagem</h2>
       <button
         type="button"
         data-picker-close
-        aria-label="Close"
+        aria-label="Fechar"
         class="text-2xl leading-none text-faint hover:text-brand"
       >
         &times;
@@ -82,7 +82,7 @@ const {
             data-picker-upload
             class="rounded-md bg-brand px-3 py-1.5 text-xs font-medium uppercase tracking-wider text-on-brand hover:bg-brand-hover"
           >
-            Upload
+            Enviar
           </button>
         </div>
       )
@@ -91,7 +91,7 @@ const {
     <p data-picker-error class="hidden px-5 pt-3 text-sm text-red-700"></p>
 
     <div data-picker-grid class="grid max-h-[60vh] grid-cols-3 gap-4 overflow-y-auto p-5 sm:grid-cols-4">
-      <p class="col-span-full py-8 text-center text-sm text-muted">Loading…</p>
+      <p class="col-span-full py-8 text-center text-sm text-muted">Carregando…</p>
     </div>
 
     <div class="flex items-center justify-between border-t border-line px-5 py-3 text-xs">
@@ -102,14 +102,14 @@ const {
           data-picker-prev
           class="rounded-md border border-line px-3 py-1.5 uppercase tracking-widest text-muted disabled:opacity-40"
         >
-          Previous
+          Anterior
         </button>
         <button
           type="button"
           data-picker-next
           class="rounded-md border border-line px-3 py-1.5 uppercase tracking-widest text-muted disabled:opacity-40"
         >
-          Next
+          Próxima
         </button>
       </span>
     </div>

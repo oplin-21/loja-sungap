@@ -37,18 +37,18 @@ const timeZone = Astro.locals.settings?.timeZone ?? getConfig().timeZone;
 const shopHref = catalogPath(Astro.locals.settings?.homePage);
 ---
 
-<Layout title="Your account">
+<Layout title="Sua conta">
   <div class="mx-auto max-w-2xl">
     <div class="mb-6 flex items-center justify-between">
-      <h1 class="font-serif text-3xl tracking-tight sm:text-4xl">Your orders</h1>
-      <a href="/account/logout" class="text-sm font-medium text-accent">Sign out</a>
+      <h1 class="font-serif text-3xl tracking-tight sm:text-4xl">Seus pedidos</h1>
+      <a href="/account/logout" class="text-sm font-medium text-accent">Sair</a>
     </div>
-    <p class="mb-6 text-sm text-muted">Signed in as {email}</p>
+    <p class="mb-6 text-sm text-muted">Conectado como {email}</p>
 
     {
       orders.length === 0 ? (
         <p class="rounded-lg border border-line bg-surface px-4 py-6 text-center text-sm text-muted">
-          No orders yet. <a href={shopHref} class="font-medium text-accent">Start shopping →</a>
+          Nenhum pedido ainda. <a href={shopHref} class="font-medium text-accent">Começar a comprar →</a>
         </p>
       ) : (
         <ul class="divide-y divide-line overflow-hidden rounded-lg border border-line bg-surface">
@@ -57,11 +57,11 @@ const shopHref = catalogPath(Astro.locals.settings?.homePage);
               <div>
                 {orderLinks.get(o.id) ? (
                   <a href={orderLinks.get(o.id)} class="font-medium text-ink hover:text-accent">
-                    Order #{orderReference(o.public_id, o.id, orderCfg)}
+                    Pedido nº{orderReference(o.public_id, o.id, orderCfg)}
                   </a>
                 ) : (
                   <span class="font-medium text-ink">
-                    Order #{orderReference(o.public_id, o.id, orderCfg)}
+                    Pedido nº{orderReference(o.public_id, o.id, orderCfg)}
                   </span>
                 )}
                 <div class="text-xs text-faint">{formatDate(o.created_at, undefined, timeZone)}</div>

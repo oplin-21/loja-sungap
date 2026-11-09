@@ -29,24 +29,24 @@ const sortHref = (col: string) =>
 const arrow = (col: string) => (sort === col ? (dir === 'asc' ? ' ↑' : ' ↓') : '');
 ---
 
-<AdminLayout title="Customers" active="customers">
-  <h1 class="mb-8 font-serif text-3xl tracking-tight">Customers</h1>
+<AdminLayout title="Clientes" active="customers">
+  <h1 class="mb-8 font-serif text-3xl tracking-tight">Clientes</h1>
 
   <div class="sm:overflow-x-auto">
     <table class="admin-table w-full text-left text-sm sm:min-w-[40rem]">
     <thead>
       <tr class="border-b border-line text-xs uppercase tracking-widest text-gray-400">
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('email')} class="hover:text-brand">Email{arrow('email')}</a>
+          <a href={sortHref('email')} class="hover:text-brand">E-mail{arrow('email')}</a>
         </th>
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('orders')} class="hover:text-brand">Orders{arrow('orders')}</a>
+          <a href={sortHref('orders')} class="hover:text-brand">Pedidos{arrow('orders')}</a>
         </th>
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('lifetime')} class="hover:text-brand">Lifetime value{arrow('lifetime')}</a>
+          <a href={sortHref('lifetime')} class="hover:text-brand">Total já comprado{arrow('lifetime')}</a>
         </th>
         <th class="py-3 font-normal">
-          <a href={sortHref('last')} class="hover:text-brand">Last order{arrow('last')}</a>
+          <a href={sortHref('last')} class="hover:text-brand">Último pedido{arrow('last')}</a>
         </th>
       </tr>
     </thead>
@@ -72,7 +72,7 @@ const arrow = (col: string) => (sort === col ? (dir === 'asc' ? ' ↑' : ' ↓')
         customers.length === 0 && (
           <tr>
             <td colspan="4" class="py-8 text-center text-gray-400">
-              No customers yet.
+              Nenhum cliente ainda.
             </td>
           </tr>
         )

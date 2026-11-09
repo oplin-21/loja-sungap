@@ -159,9 +159,9 @@ const editAddressHref = (() => {
   return `/checkout?${params}`;
 })();
 const RAIL_LABEL: Record<InAppRail, string> = {
-  lightning: 'Pay with Lightning',
-  opennode: 'Pay with Bitcoin',
-  demo: 'Place demo order',
+  lightning: 'Pagar com Lightning',
+  opennode: 'Pagar com Bitcoin',
+  demo: 'Fazer pedido de demonstração',
 };
 
 /**
@@ -202,11 +202,11 @@ const errors: string[] = [];
 const submitted = isPost || rail === 'demo';
 if (submitted) {
   if (!/.+@.+\..+/.test(addr.email)) errors.push('A valid email is required.');
-  if (!addr.name) errors.push('Name is required.');
-  if (!addr.line1) errors.push('Address is required.');
-  if (!addr.city) errors.push('City is required.');
-  if (!addr.postal) errors.push('Postal code is required.');
-  if (addr.country.length !== 2) errors.push('Use a 2-letter country code (e.g. US).');
+  if (!addr.name) errors.push('Informe o nome.');
+  if (!addr.line1) errors.push('Informe o endereço.');
+  if (!addr.city) errors.push('Informe a cidade.');
+  if (!addr.postal) errors.push('Informe o CEP.');
+  if (addr.country.length !== 2) errors.push('Use a sigla do país com 2 letras (ex.: BR).');
 
   if (errors.length === 0) {
     const quote = quoteShipping(effectiveShipping, {
@@ -233,10 +233,10 @@ if (submitted) {
           }),
         );
         errors.push(
-          `We can't calculate shipping for ${quote.missingWeight.map((m) => m.name).join(', ')} right now. Please contact us to complete this order.`,
+          `Não conseguimos calcular o frete de ${quote.missingWeight.map((m) => m.name).join(', ')} agora. Fale com a gente para concluir este pedido.`,
         );
       } else if (overweight) {
-        errors.push('This order is too heavy for the available shipping services.');
+        errors.push('Este pedido é pesado demais para os fretes disponíveis.');
       } else {
         errors.push(`Sorry, we don't ship to ${addr.country} yet.`);
       }
@@ -247,7 +247,7 @@ if (submitted) {
       if (chosenLabel) {
         const chosen = options.find((o) => o.label === chosenLabel);
         if (!chosen) {
-          errors.push('Please choose a shipping option.');
+          errors.push('Escolha uma opção de frete.');
         } else {
           // Finalize: mint the invoice for subtotal + the chosen shipping.
           // Claim the order's public identity + guest credential BEFORE the
@@ -270,7 +270,7 @@ if (submitted) {
           );
           if (!reserved) {
             await deleteGuestAccessIfUnsettled(env.DB, publicId);
-            errors.push('Some inventory just sold out — please review your cart.');
+            errors.push('Alguns itens acabaram de esgotar — revise seu carrinho.');
           } else {
             const shippingAddress = {
               name: addr.name,
@@ -362,12 +362,12 @@ const showShipping = stage === 'shipping';
 const hasErrors = errors.length > 0;
 ---
 
-<Layout title="Checkout" description="Enter your shipping details.">
+<Layout title="Finalizar compra" description="Enter your shipping details.">
   <div class="mx-auto max-w-lg">
     {
       rail === 'demo' && (
         <div class="mb-6 rounded-lg border-2 border-amber-400 bg-amber-50 px-4 py-4 text-center text-amber-900">
-          <p class="text-base font-bold uppercase tracking-wide">⚠️ Demo checkout — not a real payment</p>
+          <p class="text-base font-bold uppercase tracking-wide">⚠️ Pagamento de demonstração — não é um pagamento real</p>
           <p class="mt-1 text-sm">
             No card is charged. Completing it places a real order tagged
             <code class="rounded bg-amber-100 px-1">demo</code> so you can see the full flow.
@@ -375,7 +375,7 @@ const hasErrors = errors.length > 0;
         </div>
       )
     }
-    <h1 class="mb-1 font-serif text-3xl tracking-tight sm:text-4xl">Checkout</h1>
+    <h1 class="mb-1 font-serif text-3xl tracking-tight sm:text-4xl">Finalizar compra</h1>
     <p class="mb-6 text-sm text-muted">
       Subtotal {formatPrice(subtotalCents, currency)} · {lines.length} item{lines.length === 1 ? '' : 's'}
     </p>
@@ -409,18 +409,18 @@ const hasErrors = errors.length > 0;
           <input type="hidden" name="country" value={addr.country} />
 
           <div class="rounded-lg border border-line bg-surface p-4 text-sm">
-            <div class="mb-1 font-medium">Ship to</div>
+            <div class="mb-1 font-medium">Entregar em</div>
             <div class="text-muted">
               {addr.name}, {addr.line1}
               {addr.line2 ? `, ${addr.line2}` : ''}, {addr.city} {addr.state} {addr.postal}, {addr.country}
             </div>
             <a href={editAddressHref} class="mt-2 inline-block text-xs font-medium text-accent">
-              Edit address
+              Editar endereço
             </a>
           </div>
 
           <fieldset class="space-y-2">
-            <legend class="mb-1 text-sm font-medium">Shipping</legend>
+            <legend class="mb-1 text-sm font-medium">Frete</legend>
             {options.map((o, i) => (
               <label class="flex cursor-pointer items-center justify-between rounded-lg border border-line bg-surface p-3 text-sm has-[:checked]:border-brand">
                 <span class="flex items-center gap-2">
@@ -451,7 +451,7 @@ const hasErrors = errors.length > 0;
             <input type="hidden" name="extra" value={id} />
           ))}
           <label class="block text-sm">
-            <span class="mb-1 block font-medium">Email</span>
+            <span class="mb-1 block font-medium">E-mail</span>
             <input
               type="email"
               name="email"
@@ -461,34 +461,34 @@ const hasErrors = errors.length > 0;
             />
           </label>
           <label class="block text-sm">
-            <span class="mb-1 block font-medium">Full name</span>
+            <span class="mb-1 block font-medium">Nome completo</span>
             <input type="text" name="name" value={addr.name} required class="w-full rounded-md border border-line px-3 py-2" />
           </label>
           <label class="block text-sm">
-            <span class="mb-1 block font-medium">Address</span>
+            <span class="mb-1 block font-medium">Endereço</span>
             <input type="text" name="line1" value={addr.line1} required class="w-full rounded-md border border-line px-3 py-2" />
           </label>
           <label class="block text-sm">
-            <span class="mb-1 block font-medium">Apartment, suite, etc. (optional)</span>
+            <span class="mb-1 block font-medium">Complemento (opcional)</span>
             <input type="text" name="line2" value={addr.line2} class="w-full rounded-md border border-line px-3 py-2" />
           </label>
           <div class="grid grid-cols-2 gap-3">
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">City</span>
+              <span class="mb-1 block font-medium">Cidade</span>
               <input type="text" name="city" value={addr.city} required class="w-full rounded-md border border-line px-3 py-2" />
             </label>
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">State / Province</span>
+              <span class="mb-1 block font-medium">Estado (UF)</span>
               <input type="text" name="state" value={addr.state} class="w-full rounded-md border border-line px-3 py-2" />
             </label>
           </div>
           <div class="grid grid-cols-2 gap-3">
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">Postal code</span>
+              <span class="mb-1 block font-medium">CEP</span>
               <input type="text" name="postal" value={addr.postal} required class="w-full rounded-md border border-line px-3 py-2" />
             </label>
             <label class="block text-sm">
-              <span class="mb-1 block font-medium">Country</span>
+              <span class="mb-1 block font-medium">País</span>
               {/* A select, not a code field: shoppers should not need to know ISO
                   codes. Native type-ahead finds a country by typing its name; the
                   value stays the alpha-2 code the calculator expects. */}
@@ -507,14 +507,14 @@ const hasErrors = errors.length > 0;
           </div>
           {
             knownCountries.length > 0 && (
-              <p class="text-xs text-faint">Ships to: {knownCountries.join(', ')}</p>
+              <p class="text-xs text-faint">Entrega em: {knownCountries.join(', ')}</p>
             )
           }
           <button
             type="submit"
             class="w-full rounded-md bg-brand px-4 py-2.5 font-medium text-on-brand hover:bg-brand-hover"
           >
-            Continue to shipping →
+            Continuar para o frete →
           </button>
         </form>
       )

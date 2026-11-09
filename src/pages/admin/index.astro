@@ -32,8 +32,8 @@ const cards = [
 ];
 ---
 
-<AdminLayout title="Dashboard" active="dashboard">
-  <h1 class="mb-8 font-serif text-3xl tracking-tight">Dashboard</h1>
+<AdminLayout title="Painel" active="dashboard">
+  <h1 class="mb-8 font-serif text-3xl tracking-tight">Painel</h1>
 
   <div class="mb-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
     {
@@ -54,9 +54,9 @@ const cards = [
   <div class="grid gap-12 lg:grid-cols-2">
     <section>
       <div class="mb-3 flex items-baseline justify-between">
-        <h2 class="text-xs uppercase tracking-widest text-gray-400">Recent orders</h2>
+        <h2 class="text-xs uppercase tracking-widest text-gray-400">Pedidos recentes</h2>
         <a href="/admin/orders" class="text-xs uppercase tracking-widest text-accent hover:underline">
-          View all
+          Ver todos
         </a>
       </div>
       <table class="w-full text-left text-sm">
@@ -82,7 +82,7 @@ const cards = [
           {
             recent.length === 0 && (
               <tr>
-                <td class="py-6 text-center text-gray-400">No orders yet.</td>
+                <td class="py-6 text-center text-gray-400">Nenhum pedido ainda.</td>
               </tr>
             )
           }
@@ -92,12 +92,12 @@ const cards = [
 
     <section>
       <div class="mb-3 flex items-baseline justify-between">
-        <h2 class="text-xs uppercase tracking-widest text-gray-400">Low stock</h2>
+        <h2 class="text-xs uppercase tracking-widest text-gray-400">Estoque baixo</h2>
         <a
           href="/admin/products?sort=stock&dir=asc"
           class="text-xs uppercase tracking-widest text-accent hover:underline"
         >
-          View all
+          Ver todos
         </a>
       </div>
       <table class="w-full text-left text-sm">
@@ -121,7 +121,7 @@ const cards = [
           {
             lowStock.length === 0 && (
               <tr>
-                <td class="py-6 text-center text-gray-400">Everything's well-stocked.</td>
+                <td class="py-6 text-center text-gray-400">Estoque em dia.</td>
               </tr>
             )
           }

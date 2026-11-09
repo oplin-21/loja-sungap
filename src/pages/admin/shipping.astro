@@ -223,14 +223,14 @@ const isFirstSave = parsed.status !== 'valid';
 const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500 ${path}`;
 ---
 
-<AdminLayout title="Shipping" active="shipping">
+<AdminLayout title="Frete" active="shipping">
   <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
     <div>
-      <h1 class="font-serif text-3xl tracking-tight">Shipping</h1>
+      <h1 class="font-serif text-3xl tracking-tight">Frete</h1>
       <p class="mt-2 text-sm text-gray-500">
         Zones, rates, and free-shipping thresholds. Amounts are in {currency.toUpperCase()};
         weights are entered in <strong>{unit}</strong> and stored in grams — change the unit in{' '}
-        <a href="/admin/settings" class="underline hover:text-brand">Settings</a>.
+        <a href="/admin/settings" class="underline hover:text-brand">Configurações</a>.
       </p>
     </div>
     <a href="/cart" class="text-xs uppercase tracking-widest text-gray-500 hover:text-brand">
@@ -240,7 +240,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
 
   {saved && (
     <p class="mb-6 rounded-md border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
-      Shipping saved.
+      Frete salvo.
     </p>
   )}
   {notice && (
@@ -280,7 +280,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
     <section class="rounded-md border border-line bg-white/60 p-4">
       <label class="flex items-center gap-3 text-sm">
         <input type="checkbox" name="enabled" value="1" checked={model.enabled} class="size-4" />
-        <span><strong class="font-semibold">Offer shipping</strong> — collect an address and charge for delivery.</span>
+        <span><strong class="font-semibold">Oferecer frete</strong> — pedir endereço e cobrar a entrega.</span>
       </label>
       <div class="mt-4 flex flex-wrap items-end gap-3">
         <label class="block">
@@ -294,7 +294,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
           />
         </label>
         <p class="text-xs text-gray-500">
-          Box, mailer, padding and label. Added once per order, on top of item weights.
+          Caixa, envelope, enchimento e etiqueta. Somado uma vez por pedido, além do peso dos itens.
         </p>
       </div>
       {documentErrors.map((e) => (
@@ -307,7 +307,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
         <input type="hidden" name={`zone[${zone.token}][rate_order]`} value={zone.rates.map((r) => r.token).join(',')} />
         <div class="flex flex-wrap items-end justify-between gap-3">
           <label class="block flex-1">
-            <span class={label('')}>Zone name</span>
+            <span class={label('')}>Nome da zona</span>
             <input
               type="text"
               name={`zone[${zone.token}][name]`}
@@ -317,9 +317,9 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
             />
           </label>
           <div class="flex gap-2 text-xs uppercase tracking-widest">
-            <button name="_action" value={`move_zone:${zone.token}:up`} class="text-gray-500 hover:text-brand" disabled={zoneIndex === 0}>Up</button>
-            <button name="_action" value={`move_zone:${zone.token}:down`} class="text-gray-500 hover:text-brand" disabled={zoneIndex === model.zones.length - 1}>Down</button>
-            <button name="_action" value={`remove_zone:${zone.token}`} class="text-red-600 hover:text-red-800">Remove zone</button>
+            <button name="_action" value={`move_zone:${zone.token}:up`} class="text-gray-500 hover:text-brand" disabled={zoneIndex === 0}>Subir</button>
+            <button name="_action" value={`move_zone:${zone.token}:down`} class="text-gray-500 hover:text-brand" disabled={zoneIndex === model.zones.length - 1}>Descer</button>
+            <button name="_action" value={`remove_zone:${zone.token}`} class="text-red-600 hover:text-red-800">Remover zona</button>
           </div>
         </div>
         {errorsFor(errors, zoneIndex).map((e) => (
@@ -328,14 +328,14 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
 
         <div class="mt-4 grid gap-4 sm:grid-cols-2">
           <label class="block">
-            <span class={label('')}>Destinations</span>
+            <span class={label('')}>Destinos</span>
             <select
               name={`zone[${zone.token}][countries][]`}
               multiple
               size="6"
               class="mt-1 w-full rounded border border-line px-2 py-1 text-sm"
             >
-              <option value="*" selected={zone.countries.includes('*')}>Rest of world</option>
+              <option value="*" selected={zone.countries.includes('*')}>Resto do mundo</option>
               {countries.map((c) => (
                 <option value={c.code} selected={zone.countries.includes(c.code)}>{c.name}</option>
               ))}
@@ -358,7 +358,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
               inputmode="decimal"
               class="mt-1 w-full rounded border border-line px-2 py-1 text-sm"
             />
-            <span class="mt-1 block text-xs text-gray-500">Blank disables it.</span>
+            <span class="mt-1 block text-xs text-gray-500">Em branco desativa.</span>
           </label>
         </div>
 
@@ -367,7 +367,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
             <div class="rounded border border-line bg-paper p-3">
               <div class="flex flex-wrap items-end gap-3">
                 <label class="block">
-                  <span class={label('')}>Rate label</span>
+                  <span class={label('')}>Nome da tarifa</span>
                   <input
                     type="text"
                     name={`zone[${zone.token}][rate][${rate.token}][label]`}
@@ -377,14 +377,14 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
                   />
                 </label>
                 <label class="block">
-                  <span class={label('')}>Pricing</span>
+                  <span class={label('')}>Preço</span>
                   <select
                     name={`zone[${zone.token}][rate][${rate.token}][mode]`}
                     class="mt-1 rounded border border-line px-2 py-1 text-sm"
                   >
-                    <option value="flat" selected={rate.mode === 'flat'}>Flat price</option>
-                    <option value="weight" selected={rate.mode === 'weight'}>By order weight</option>
-                    <option value="pickup" selected={rate.mode === 'pickup'}>Local pickup</option>
+                    <option value="flat" selected={rate.mode === 'flat'}>Preço fixo</option>
+                    <option value="weight" selected={rate.mode === 'weight'}>Pelo peso do pedido</option>
+                    <option value="pickup" selected={rate.mode === 'pickup'}>Retirada no local</option>
                   </select>
                 </label>
                 {rate.mode !== 'weight' && (
@@ -404,7 +404,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
                   value={`remove_rate:${zone.token}:${rate.token}`}
                   class="ml-auto text-xs uppercase tracking-widest text-red-600 hover:text-red-800"
                 >
-                  Remove rate
+                  Remover tarifa
                 </button>
               </div>
               {errorsFor(errors, zoneIndex, rateIndex).map((e) => (
@@ -418,7 +418,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
                     name={`zone[${zone.token}][rate][${rate.token}][band_order]`}
                     value={rate.bands.map((b) => b.token).join(',')}
                   />
-                  <p class={label('mb-2 block')}>Weight bands</p>
+                  <p class={label('mb-2 block')}>Faixas de peso</p>
                   {rate.bands.map((band, bandIndex) => (
                     <div class="mb-2 flex flex-wrap items-end gap-3">
                       <label class="block">
@@ -441,11 +441,11 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
                             checked={band.noMax}
                             class="size-4"
                           />
-                          No maximum
+                          Sem máximo
                         </label>
                       )}
                       <label class="block">
-                        <span class="text-xs text-gray-500">Price</span>
+                        <span class="text-xs text-gray-500">Preço</span>
                         <input
                           type="text"
                           name={`zone[${zone.token}][rate][${rate.token}][band][${band.token}][amount]`}
@@ -459,7 +459,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
                         value={`remove_band:${zone.token}:${rate.token}:${band.token}`}
                         class="pb-1 text-xs uppercase tracking-widest text-red-600 hover:text-red-800"
                       >
-                        Remove
+                        Remover
                       </button>
                       {errorsFor(errors, zoneIndex, rateIndex, bandIndex).map((e) => (
                         <p class="w-full text-sm text-red-700">{e.message}</p>
@@ -471,7 +471,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
                     value={`add_band:${zone.token}:${rate.token}`}
                     class="text-xs uppercase tracking-widest text-gray-500 hover:text-brand"
                   >
-                    + Add band
+                    + Adicionar faixa
                   </button>
                 </div>
               )}
@@ -482,7 +482,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
             value={`add_rate:${zone.token}`}
             class="text-xs uppercase tracking-widest text-gray-500 hover:text-brand"
           >
-            + Add rate
+            + Adicionar tarifa
           </button>
         </div>
       </section>
@@ -501,7 +501,7 @@ const label = (path: string) => `text-xs uppercase tracking-widest text-gray-500
         value="add_zone"
         class="text-xs uppercase tracking-widest text-gray-500 hover:text-brand"
       >
-        + Add zone
+        + Adicionar zona
       </button>
       <p class="text-xs text-gray-500">
         Stripe shows the rates for the country chosen in the cart; the final address is confirmed

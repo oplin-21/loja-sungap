@@ -141,9 +141,9 @@ const METHOD: Record<string, { label: string; hint: string }> = {
 };
 ---
 
-<Layout title="Checkout" description="Express checkout.">
+<Layout title="Finalizar compra" description="Express checkout.">
   <div class="mx-auto max-w-md">
-    <p class="text-xs uppercase tracking-[0.25em] text-muted">Express checkout</p>
+    <p class="text-xs uppercase tracking-[0.25em] text-muted">Compra expressa</p>
     <h1 class="mt-2 mb-6 font-serif text-3xl tracking-tight sm:text-4xl">{heading}</h1>
 
     <ul class="divide-y divide-line border-y border-line">
@@ -159,7 +159,7 @@ const METHOD: Record<string, { label: string; hint: string }> = {
             />
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm font-medium">{l.name}</p>
-              <p class="text-xs text-muted">Qty {l.qty}</p>
+              <p class="text-xs text-muted">Qtd {l.qty}</p>
             </div>
             <span class="tabular-nums">{formatPrice(l.unitPriceCents * l.qty)}</span>
           </li>
@@ -188,7 +188,7 @@ const METHOD: Record<string, { label: string; hint: string }> = {
                 zone — possibly the very country the Stripe filter removed. */}
             {m === 'stripe' && destination.showSelect && (
               <label class="mb-2 flex items-center justify-between gap-2 text-xs uppercase tracking-widest text-muted">
-                Ship to
+                Entregar em
                 <select
                   name="country"
                   class="rounded-md border border-line px-2 py-1.5 text-sm normal-case tracking-normal text-ink"

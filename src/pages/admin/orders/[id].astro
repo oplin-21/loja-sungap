@@ -161,7 +161,7 @@ const willEmailCustomer =
   {/* Refund controls all live in the Refunds panel below, so the one button
       that moves money can't sit next to bookkeeping ones that don't. */}
   <div class="mt-4 mb-8">
-    <h1 class="font-serif text-3xl tracking-tight">Order #{num}</h1>
+    <h1 class="font-serif text-3xl tracking-tight">Pedido nº{num}</h1>
   </div>
 
   {
@@ -199,19 +199,19 @@ const willEmailCustomer =
 
   <dl class="mb-8 grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:max-w-lg">
     <div>
-      <dt class="text-xs uppercase tracking-widest text-gray-400">Status</dt>
+      <dt class="text-xs uppercase tracking-widest text-gray-400">Situação</dt>
       <dd class="font-medium">{order.status}</dd>
     </div>
     <div>
-      <dt class="text-xs uppercase tracking-widest text-gray-400">Placed</dt>
+      <dt class="text-xs uppercase tracking-widest text-gray-400">Feito em</dt>
       <dd>{formatDate(order.created_at, undefined, timeZone)}</dd>
     </div>
     <div>
-      <dt class="text-xs uppercase tracking-widest text-gray-400">Email</dt>
+      <dt class="text-xs uppercase tracking-widest text-gray-400">E-mail</dt>
       <dd>{order.email ?? '—'}</dd>
     </div>
     <div>
-      <dt class="text-xs uppercase tracking-widest text-gray-400">Shipping</dt>
+      <dt class="text-xs uppercase tracking-widest text-gray-400">Frete</dt>
       <dd>
         {formatPrice(order.shipping_cents, order.currency)}
         {/* The snapshot taken when this order was paid. Never recomputed from the
@@ -227,7 +227,7 @@ const willEmailCustomer =
     {
       order.discount_cents > 0 && (
         <div>
-          <dt class="text-xs uppercase tracking-widest text-gray-400">Discount</dt>
+          <dt class="text-xs uppercase tracking-widest text-gray-400">Desconto</dt>
           <dd>&minus;{formatPrice(order.discount_cents, order.currency)}</dd>
         </div>
       )
@@ -235,7 +235,7 @@ const willEmailCustomer =
     {
       order.tax_cents > 0 && (
         <div>
-          <dt class="text-xs uppercase tracking-widest text-gray-400">Tax</dt>
+          <dt class="text-xs uppercase tracking-widest text-gray-400">Imposto</dt>
           <dd>{formatPrice(order.tax_cents, order.currency)}</dd>
         </div>
       )
@@ -247,7 +247,7 @@ const willEmailCustomer =
     {
       ship && (
         <div class="col-span-2">
-          <dt class="text-xs uppercase tracking-widest text-gray-400">Ship to</dt>
+          <dt class="text-xs uppercase tracking-widest text-gray-400">Entregar em</dt>
           <dd class="whitespace-pre-line">
             {[
               ship.name,
@@ -263,11 +263,11 @@ const willEmailCustomer =
       )
     }
     <div>
-      <dt class="text-xs uppercase tracking-widest text-gray-400">Payment method</dt>
+      <dt class="text-xs uppercase tracking-widest text-gray-400">Forma de pagamento</dt>
       <dd>{paymentLabel}</dd>
     </div>
     <div class="col-span-2">
-      <dt class="text-xs uppercase tracking-widest text-gray-400">Payment reference</dt>
+      <dt class="text-xs uppercase tracking-widest text-gray-400">Referência do pagamento</dt>
       <dd class="font-mono text-xs break-all">{order.provider_session_id ?? '—'}</dd>
     </div>
   </dl>
@@ -275,7 +275,7 @@ const willEmailCustomer =
   <RefundPanel order={order} timeZone={timeZone} />
 
   <div class="mb-8 rounded-lg border border-line p-5">
-    <h2 class="mb-3 text-xs uppercase tracking-widest text-gray-400">Fulfillment</h2>
+    <h2 class="mb-3 text-xs uppercase tracking-widest text-gray-400">Envio</h2>
     {
       labelUnreconciled && labelRecord && (
         <div class="mb-4 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
@@ -335,7 +335,7 @@ const willEmailCustomer =
       fulfilled ? (
         <div class="space-y-2 text-sm">
           <p>
-            <span class="font-medium text-green-700">Fulfilled</span>
+            <span class="font-medium text-green-700">Enviado</span>
             {order.fulfilled_at && <span class="text-gray-400"> · {formatDate(order.fulfilled_at, undefined, timeZone)}</span>}
           </p>
           {order.tracking_number && (
@@ -360,7 +360,7 @@ const willEmailCustomer =
           <form method="POST" action={`/api/admin/orders/${order.public_id}`}>
             <input type="hidden" name="_action" value="unfulfill" />
             <button type="submit" class="text-xs uppercase tracking-widest text-gray-400 hover:text-red-600">
-              Mark unfulfilled
+              Marcar como não enviado
             </button>
           </form>
         </div>
@@ -453,7 +453,7 @@ const willEmailCustomer =
                       form="label-discard"
                       class="text-xs uppercase tracking-widest text-gray-400 hover:text-brand"
                     >
-                      Start over
+                      Recomeçar
                     </button>
                   </div>
                   <p class="text-xs text-gray-500">
@@ -476,23 +476,23 @@ const willEmailCustomer =
                       <input name="from_name" value={shipFrom.name ?? ''} required class="mt-1 w-full rounded-md border border-line bg-paper px-3 py-2" />
                     </label>
                     <label class="block sm:col-span-3">
-                      <span class="block text-xs uppercase tracking-widest text-gray-400">Street</span>
+                      <span class="block text-xs uppercase tracking-widest text-gray-400">Rua</span>
                       <input name="from_street1" value={shipFrom.street1 ?? ''} required class="mt-1 w-full rounded-md border border-line bg-paper px-3 py-2" />
                     </label>
                     <label class="block">
-                      <span class="block text-xs uppercase tracking-widest text-gray-400">City</span>
+                      <span class="block text-xs uppercase tracking-widest text-gray-400">Cidade</span>
                       <input name="from_city" value={shipFrom.city ?? ''} required class="mt-1 w-full rounded-md border border-line bg-paper px-3 py-2" />
                     </label>
                     <label class="block">
-                      <span class="block text-xs uppercase tracking-widest text-gray-400">State</span>
+                      <span class="block text-xs uppercase tracking-widest text-gray-400">Estado</span>
                       <input name="from_state" value={shipFrom.state ?? ''} class="mt-1 w-full rounded-md border border-line bg-paper px-3 py-2" />
                     </label>
                     <label class="block">
-                      <span class="block text-xs uppercase tracking-widest text-gray-400">Postal code</span>
+                      <span class="block text-xs uppercase tracking-widest text-gray-400">CEP</span>
                       <input name="from_zip" value={shipFrom.zip ?? ''} required class="mt-1 w-full rounded-md border border-line bg-paper px-3 py-2" />
                     </label>
                     <label class="block">
-                      <span class="block text-xs uppercase tracking-widest text-gray-400">Country</span>
+                      <span class="block text-xs uppercase tracking-widest text-gray-400">País</span>
                       <input name="from_country" value={shipFrom.country ?? 'US'} required maxlength="2" class="mt-1 w-full rounded-md border border-line bg-paper px-3 py-2 uppercase" />
                     </label>
                     <label class="block">
@@ -516,7 +516,7 @@ const willEmailCustomer =
                     type="submit"
                     class="rounded-md bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover"
                   >
-                    Get rates
+                    Cotar frete
                   </button>
                   <p class="text-xs text-gray-500">
                     Address and box size are remembered for the next label. Weight is prefilled
@@ -535,7 +535,7 @@ const willEmailCustomer =
         >
           <input type="hidden" name="_action" value="fulfill" />
           <label class="block">
-            <span class="block text-xs uppercase tracking-widest text-gray-400">Carrier</span>
+            <span class="block text-xs uppercase tracking-widest text-gray-400">Transportadora</span>
             <select name="carrier" class="mt-1 rounded-md border border-line bg-paper px-3 py-2">
               {CARRIERS.map((c) => (
                 <option value={c.code}>{c.name}</option>
@@ -543,7 +543,7 @@ const willEmailCustomer =
             </select>
           </label>
           <label class="block">
-            <span class="block text-xs uppercase tracking-widest text-gray-400">Tracking #</span>
+            <span class="block text-xs uppercase tracking-widest text-gray-400">Código de rastreio</span>
             <input
               name="tracking_number"
               type="text"
@@ -554,7 +554,7 @@ const willEmailCustomer =
             type="submit"
             class="rounded-md bg-brand px-5 py-2 font-medium text-white hover:bg-brand-hover"
           >
-            Mark as fulfilled
+            Marcar como enviado
           </button>
         </form>
         </div>
@@ -585,7 +585,7 @@ const willEmailCustomer =
                     {attempt.amount_cents != null && <> · {formatPrice(attempt.amount_cents)}</>}
                   </p>
                 )}
-                {attempt.tracking_number && <p class="mt-1">Tracking {attempt.tracking_number}</p>}
+                {attempt.tracking_number && <p class="mt-1">Rastreio {attempt.tracking_number}</p>}
                 {attempt.transaction_id && (
                   <p class="mt-1">
                     Transaction <code>{attempt.transaction_id}</code>
@@ -615,7 +615,7 @@ const willEmailCustomer =
   {
     canReissue && (
       <div class="mb-8 rounded-lg border border-line p-5">
-        <h2 class="mb-3 text-xs uppercase tracking-widest text-gray-400">Customer link</h2>
+        <h2 class="mb-3 text-xs uppercase tracking-widest text-gray-400">Link do cliente</h2>
         {/* Support remedy for a forwarded or leaked guest link: rotates the
             stored access token and emails the customer the replacement. The
             token is never shown here — the email is the only delivery path. */}
@@ -629,7 +629,7 @@ const willEmailCustomer =
             type="submit"
             class="rounded-md border border-line px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand"
           >
-            Email a new order link
+            Enviar novo link do pedido por e-mail
           </button>
           <p class="mt-2 text-xs text-gray-500">
             Use this if the customer reports a forwarded or leaked link. The old links stop
@@ -640,15 +640,15 @@ const willEmailCustomer =
     )
   }
 
-  <h2 class="mb-3 text-xs uppercase tracking-widest text-gray-400">Items</h2>
+  <h2 class="mb-3 text-xs uppercase tracking-widest text-gray-400">Itens</h2>
   <div class="sm:overflow-x-auto">
     <table class="admin-table w-full text-left text-sm sm:min-w-[34rem]">
     <thead>
       <tr class="border-b border-line text-xs uppercase tracking-widest text-gray-400">
-        <th class="py-3 pr-4 font-normal">Product</th>
-        <th class="py-3 pr-4 font-normal">Unit price</th>
-        <th class="py-3 pr-4 font-normal">Qty</th>
-        <th class="py-3 text-right font-normal">Line total</th>
+        <th class="py-3 pr-4 font-normal">Produto</th>
+        <th class="py-3 pr-4 font-normal">Preço unitário</th>
+        <th class="py-3 pr-4 font-normal">Qtd</th>
+        <th class="py-3 text-right font-normal">Total da linha</th>
       </tr>
     </thead>
     <tbody>
@@ -676,7 +676,7 @@ const willEmailCustomer =
         items.length === 0 && (
           <tr>
             <td colspan="4" class="py-8 text-center text-gray-400">
-              No line items recorded for this order.
+              Nenhum item registrado neste pedido.
             </td>
           </tr>
         )

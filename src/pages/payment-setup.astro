@@ -46,7 +46,7 @@ const GUIDES: Record<string, Guide> = {
 const guide = GUIDES[method] ?? null;
 ---
 
-<Layout title="Set up payments" description="How to enable a payment method.">
+<Layout title="Configurar pagamentos" description="How to enable a payment method.">
   <div class="mx-auto max-w-xl py-8">
     <a href="/cart" class="text-xs uppercase tracking-widest text-faint hover:text-brand">
       &larr; Back to cart
@@ -70,7 +70,7 @@ const guide = GUIDES[method] ?? null;
         </>
       ) : (
         <>
-          <h1 class="mt-4 font-serif text-3xl tracking-tight">Set up payments</h1>
+          <h1 class="mt-4 font-serif text-3xl tracking-tight">Configurar pagamentos</h1>
           <p class="mt-3 text-muted">
             This payment method isn't configured yet. Add a real rail (card or Lightning)
             in Admin → Settings → Payments, or keep using the Demo checkout to try the store.
@@ -80,7 +80,7 @@ const guide = GUIDES[method] ?? null;
     }
 
     <div class="mt-8 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-      In the meantime, <strong class="font-semibold">Demo checkout</strong> works right now — it
+      Enquanto isso, <strong class="font-semibold">Pagamento de demonstração</strong> works right now — it
       places a real, demo-tagged order so you can see the full flow without charging anyone.
     </div>
   </div>

@@ -45,16 +45,16 @@ const shippingIssue = shippingFor(Astro.locals.settings).issue;
 const inventoryExceptionCount = await countUnresolvedInventoryExceptions(env.DB);
 
 const nav: { key: Section; label: string; href: string }[] = [
-  { key: 'dashboard', label: 'Dashboard', href: '/admin' },
-  { key: 'products', label: 'Products', href: '/admin/products' },
-  { key: 'orders', label: 'Orders', href: '/admin/orders' },
-  { key: 'customers', label: 'Customers', href: '/admin/customers' },
-  { key: 'categories', label: 'Categories', href: '/admin/categories' },
-  { key: 'pages', label: 'Pages', href: '/admin/pages' },
-  { key: 'navigation', label: 'Navigation', href: '/admin/navigation' },
-  { key: 'shipping', label: 'Shipping', href: '/admin/shipping' },
-  { key: 'media', label: 'Media', href: '/admin/media' },
-  { key: 'settings', label: 'Settings', href: '/admin/settings' },
+  { key: 'dashboard', label: 'Painel', href: '/admin' },
+  { key: 'products', label: 'Produtos', href: '/admin/products' },
+  { key: 'orders', label: 'Pedidos', href: '/admin/orders' },
+  { key: 'customers', label: 'Clientes', href: '/admin/customers' },
+  { key: 'categories', label: 'Categorias', href: '/admin/categories' },
+  { key: 'pages', label: 'Páginas', href: '/admin/pages' },
+  { key: 'navigation', label: 'Menu da loja', href: '/admin/navigation' },
+  { key: 'shipping', label: 'Frete', href: '/admin/shipping' },
+  { key: 'media', label: 'Galeria', href: '/admin/media' },
+  { key: 'settings', label: 'Configurações', href: '/admin/settings' },
 ];
 // Label of the section we're on — shown in the collapsed mobile disclosure.
 const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
@@ -86,7 +86,7 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
           id="admin-nav"
           data-admin-nav-toggle
           class="peer sr-only"
-          aria-label="Toggle admin sections"
+          aria-label="Abrir ou fechar menu"
         />
         <label
           for="admin-nav"
@@ -94,7 +94,7 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
           class="flex cursor-pointer select-none items-center justify-between gap-3 rounded-md border border-line bg-white/60 px-4 py-3 transition hover:border-brand sm:hidden"
         >
           <span class="flex flex-col gap-0.5">
-            <span class="text-[0.625rem] uppercase tracking-[0.25em] text-gray-400">Admin</span>
+            <span class="text-[0.625rem] uppercase tracking-[0.25em] text-gray-400">Administração</span>
             <span class="font-serif text-lg leading-none tracking-tight text-gray-900">{currentLabel}</span>
           </span>
           <svg
@@ -135,8 +135,8 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
         </nav>
 
         <div class="mt-4 flex gap-4 text-xs uppercase tracking-widest text-gray-400 sm:mt-8 sm:flex-col sm:gap-2">
-          <a href="/" class="hover:text-brand">&larr; View store</a>
-          {showLogout && <a href="/admin/logout" class="hover:text-brand">Log out</a>}
+          <a href="/" class="hover:text-brand">&larr; Ver loja</a>
+          {showLogout && <a href="/admin/logout" class="hover:text-brand">Sair</a>}
         </div>
       </aside>
 
@@ -148,8 +148,7 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
               class="mb-6 flex items-center justify-between gap-3 rounded-md border border-brand/30 bg-brand/5 px-4 py-3 text-sm text-gray-700 transition hover:border-brand"
             >
               <span>
-                <strong class="font-semibold">Finish setting up your store</strong> — store name,
-                payment status, and more.
+                <strong class="font-semibold">Termine de configurar sua loja</strong> — nome da loja, pagamentos e mais.
               </span>
               <span aria-hidden="true" class="text-brand">&rarr;</span>
             </a>
@@ -158,8 +157,8 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
         {
           Astro.locals.settings && paymentsInDemoMode(Astro.locals.settings) && (
             <div class="mb-6 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-              <strong class="font-semibold">No real payment method configured.</strong> Only{' '}
-              <strong>Demo checkout</strong> can take orders right now — they're recorded and tagged{' '}
+              <strong class="font-semibold">Nenhuma forma de pagamento real configurada.</strong> Só{' '}
+              <strong>Pagamento de demonstração</strong> can take orders right now — they're recorded and tagged{' '}
               <code class="rounded bg-amber-100 px-1 text-xs">demo</code>. Shoppers see setup links
               for Card &amp; Lightning until you add a key. Demo stays available alongside real rails.
             </div>
@@ -186,7 +185,7 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
               class="mb-6 flex items-center justify-between gap-3 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 transition hover:border-red-500"
             >
               <span>
-                <strong class="font-semibold">Inventory needs attention.</strong>{' '}
+                <strong class="font-semibold">O estoque precisa de atenção.</strong>{' '}
                 {inventoryExceptionCount} paid order line{inventoryExceptionCount === 1 ? '' : 's'} arrived after its stock hold ended and could not be fully deducted. Open the affected orders and reconcile stock.
               </span>
               <span aria-hidden="true">&rarr;</span>

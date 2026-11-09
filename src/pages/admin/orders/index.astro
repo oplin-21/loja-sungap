@@ -106,7 +106,7 @@ const conflictOrders = new Map(
 const listError = Astro.url.searchParams.get('error');
 ---
 
-<AdminLayout title="Orders" active="orders">
+<AdminLayout title="Pedidos" active="orders">
   {
     inventoryExceptions.length > 0 && (
       <section id="inventory-exceptions" class="mb-8 rounded-lg border border-red-300 bg-red-50 px-5 py-4">
@@ -116,7 +116,7 @@ const listError = Astro.url.searchParams.get('error');
           {inventoryExceptions.map((entry) => (
             <li>
               <a class="font-medium underline" href={`/admin/orders/${entry.order_public_id}`}>
-                Order #{orderReference(entry.order_public_id, entry.order_id, onCfg)}
+                Pedido nº{orderReference(entry.order_public_id, entry.order_id, onCfg)}
               </a>{' '}
               — {entry.shortfall_qty} unit{entry.shortfall_qty === 1 ? '' : 's'} oversold
             </li>
@@ -177,7 +177,7 @@ const listError = Astro.url.searchParams.get('error');
                       type="submit"
                       class="rounded-md border border-amber-300 bg-white px-3 py-1 font-medium uppercase tracking-wider hover:bg-amber-100"
                     >
-                      Dismiss
+                      Dispensar
                     </button>
                   </form>
                 </Fragment>
@@ -191,7 +191,7 @@ const listError = Astro.url.searchParams.get('error');
                       type="submit"
                       class="rounded-md border border-amber-300 bg-white px-3 py-1 font-medium uppercase tracking-wider hover:bg-amber-100"
                     >
-                      Retry
+                      Tentar de novo
                     </button>
                   </form>
                 </Fragment>
@@ -203,7 +203,7 @@ const listError = Astro.url.searchParams.get('error');
     )
   }
   <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
-    <h1 class="font-serif text-3xl tracking-tight">Orders</h1>
+    <h1 class="font-serif text-3xl tracking-tight">Pedidos</h1>
     <div class="flex flex-wrap items-center gap-3">
       {/* Lookup accepts the customer reference in any form it was communicated:
           the bare 10-char token, the full ord_ ID, or a legacy calculated
@@ -213,15 +213,15 @@ const listError = Astro.url.searchParams.get('error');
           type="search"
           name="q"
           value={rawQuery ?? ''}
-          placeholder="Order # or ID"
-          aria-label="Find an order by number or ID"
+          placeholder="Nº do pedido ou código"
+          aria-label="Buscar pedido por número ou código"
           class="w-44 rounded-md border border-line bg-paper px-3 py-2 text-sm focus:border-brand focus:outline-none"
         />
         <button
           type="submit"
           class="rounded-md border border-line px-4 py-2 text-xs font-medium uppercase tracking-wider text-gray-700 hover:border-brand hover:text-brand"
         >
-          Find
+          Buscar
         </button>
       </form>
       {/* Exports exactly what's on screen. Handing back the whole table right
@@ -282,23 +282,23 @@ const listError = Astro.url.searchParams.get('error');
     <thead>
       <tr class="border-b border-line text-xs uppercase tracking-widest text-gray-400">
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('order')} class="hover:text-brand">Order #{arrow('order')}</a>
+          <a href={sortHref('order')} class="hover:text-brand">Pedido nº{arrow('order')}</a>
         </th>
         <th class="py-3 pr-4 font-normal">Public ID</th>
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('email')} class="hover:text-brand">Email{arrow('email')}</a>
+          <a href={sortHref('email')} class="hover:text-brand">E-mail{arrow('email')}</a>
         </th>
         <th class="py-3 pr-4 font-normal">
           <a href={sortHref('total')} class="hover:text-brand">Total{arrow('total')}</a>
         </th>
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('status')} class="hover:text-brand">Status{arrow('status')}</a>
+          <a href={sortHref('status')} class="hover:text-brand">Situação{arrow('status')}</a>
         </th>
         <th class="py-3 pr-4 font-normal">
-          <a href={sortHref('fulfillment')} class="hover:text-brand">Fulfillment{arrow('fulfillment')}</a>
+          <a href={sortHref('fulfillment')} class="hover:text-brand">Envio{arrow('fulfillment')}</a>
         </th>
         <th class="py-3 font-normal">
-          <a href={sortHref('when')} class="hover:text-brand">When{arrow('when')}</a>
+          <a href={sortHref('when')} class="hover:text-brand">Quando{arrow('when')}</a>
         </th>
       </tr>
     </thead>

@@ -87,21 +87,20 @@ const hasPassword = !!(await getSetting(env.DB, 'admin_password_hash'));
 const catalogEmpty = await catalogIsEmpty(env.DB);
 ---
 
-<AdminLayout title="Setup" active="dashboard">
+<AdminLayout title="Configuração" active="dashboard">
   <div class="mx-auto max-w-2xl">
-    <h1 class="text-2xl font-bold">Set up your store</h1>
+    <h1 class="text-2xl font-bold">Configure sua loja</h1>
     <p class="mt-1 text-sm text-gray-500">
-      A few first-run settings — you can change them any time in Settings. This just gets
-      you running.
+      Algumas configurações iniciais — dá para mudar a qualquer momento em Configurações.
     </p>
 
     <form method="POST" class="mt-8 space-y-6">
       {/* ── Store basics ─────────────────────────────────────────────────────── */}
       <section class="rounded-lg border border-line bg-white p-5">
-        <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Store basics</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Dados da loja</h2>
         <div class="mt-4 flex flex-wrap items-end gap-3">
           <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-            Store name
+            Nome da loja
             <input
               type="text"
               name="store_name"
@@ -110,7 +109,7 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
             />
           </label>
           <label class="flex flex-col gap-1 text-xs uppercase tracking-widest text-gray-400">
-            Store time zone
+            Fuso horário da loja
             <input
               type="text"
               name="time_zone"
@@ -119,7 +118,7 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
               list="tz-list"
               data-time-zone
               data-auto-detect={settings.timeZone ? 'false' : 'true'}
-              placeholder="Search e.g. America/New_York"
+              placeholder="Buscar, ex.: America/Sao_Paulo"
               class="w-64 rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal focus:border-brand focus:outline-none"
             />
             <datalist id="tz-list">
@@ -138,9 +137,9 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
 
       {/* ── Admin password ───────────────────────────────────────────────────── */}
       <section class="rounded-lg border border-line bg-white p-5">
-        <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Admin password</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Senha da administração</h2>
         <p class="mt-1 text-sm text-gray-500">
-          Password for <code class="rounded bg-gray-100 px-1">/admin/login</code> — stored hashed
+          Senha para <code class="rounded bg-gray-100 px-1">/admin/login</code> — stored hashed
           (PBKDF2), never plaintext.{' '}
           {hasPassword ? 'A password is already set; leave blank to keep it.' : 'Required to finish.'}
           {' '}Cloudflare Access is the recommended production auth; this is the simpler stopgap.
@@ -152,7 +151,7 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
             name="admin_password"
             autocomplete="new-password"
             minlength="8"
-            placeholder="at least 8 characters"
+            placeholder="pelo menos 8 caracteres"
             class="w-64 rounded-md border border-gray-300 px-3 py-2 text-sm normal-case tracking-normal focus:border-brand focus:outline-none"
           />
         </label>
@@ -161,11 +160,11 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
 
       {/* ── Payments (configured later in Settings — not needed to get running) ─ */}
       <section class="rounded-lg border border-line bg-white p-5">
-        <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Payments</h2>
+        <h2 class="text-sm font-semibold uppercase tracking-widest text-gray-500">Pagamentos</h2>
         <p class="mt-2 text-sm text-gray-500">
-          <strong>Demo</strong> checkout works right away. Set up real payment methods (card via
+          <strong>Demonstração</strong> checkout works right away. Set up real payment methods (card via
           Stripe, Bitcoin Lightning, or OpenNode) whenever you're ready in
-          {' '}<strong>Settings → Payments</strong> — no need to do it now.
+          {' '}<strong>Configurações → Pagamentos</strong> — não precisa fazer agora.
         </p>
       </section>
 
@@ -178,8 +177,7 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
             class="mt-0.5 rounded border-gray-300 text-brand focus:ring-brand"
           />
           <span>
-            Load the <strong>demo catalog</strong> — 30 sample products across 6 categories,
-            to explore the storefront. Leave unchecked to start empty and add your own.
+            Load the <strong>demo catalog</strong> — 30 produtos de exemplo em 6 categorias, para conhecer a loja. Deixe desmarcado para começar vazio.
           </span>
         </label>
       )}
@@ -187,7 +185,7 @@ const catalogEmpty = await catalogIsEmpty(env.DB);
         type="submit"
         class="w-fit rounded-md bg-brand px-5 py-2.5 text-sm font-medium text-white hover:bg-brand-hover"
       >
-        Finish setup
+        Concluir configuração
       </button>
     </form>
   </div>

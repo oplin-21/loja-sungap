@@ -12,9 +12,9 @@ const weightUnit = Astro.locals.settings?.weightUnit ?? 'g';
 const weightRequired = zonesRequireWeight(shippingFor(Astro.locals.settings).config);
 ---
 
-<AdminLayout title="New product" active="products">
+<AdminLayout title="Novo produto" active="products">
   <a href="/admin/products" class="text-sm text-gray-500 hover:text-brand">&larr; Back to products</a>
-  <h1 class="mt-4 mb-6 text-2xl font-bold">New product</h1>
+  <h1 class="mt-4 mb-6 text-2xl font-bold">Novo produto</h1>
   <ProductForm
     action="/api/admin/products"
     submitLabel="Create product"

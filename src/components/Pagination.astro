@@ -28,10 +28,10 @@ const linkCls = 'px-3 py-1.5 text-xs uppercase tracking-widest text-muted hover:
 
 {
   totalPages > 1 && (
-    <nav class="mt-14 flex items-center justify-center gap-1" aria-label="Pagination">
+    <nav class="mt-14 flex items-center justify-center gap-1" aria-label="Paginação">
       {page > 1 && (
         <a href={hrefFor(page - 1)} class={linkCls} rel="prev">
-          Prev
+          Anterior
         </a>
       )}
       {items.map((it) =>
@@ -49,7 +49,7 @@ const linkCls = 'px-3 py-1.5 text-xs uppercase tracking-widest text-muted hover:
       )}
       {page < totalPages && (
         <a href={hrefFor(page + 1)} class={linkCls} rel="next">
-          Next
+          Próxima
         </a>
       )}
     </nav>

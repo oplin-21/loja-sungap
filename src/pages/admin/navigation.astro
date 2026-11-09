@@ -85,12 +85,11 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
 ];
 ---
 
-<AdminLayout title="Navigation" active="navigation">
+<AdminLayout title="Menu da loja" active="navigation">
   <div class="mb-8">
-    <h1 class="font-serif text-3xl tracking-tight">Navigation</h1>
+    <h1 class="font-serif text-3xl tracking-tight">Menu da loja</h1>
     <p class="mt-2 text-sm text-gray-500">
-      Choose what appears in your header and footer. Changes appear on the storefront within a
-      minute.
+      Escolha o que aparece no cabeçalho e no rodapé. As mudanças aparecem na loja em até um minuto.
     </p>
   </div>
 
@@ -104,13 +103,13 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
   {
     saved && !error && (
       <p class="mb-6 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-        Navigation updated.
+        Menu atualizado.
       </p>
     )
   }
 
   <section class="mb-10 rounded-lg border border-line bg-white/60 p-5">
-    <h2 class="mb-4 font-serif text-xl tracking-tight">Add an item</h2>
+    <h2 class="mb-4 font-serif text-xl tracking-tight">Adicionar item</h2>
 
     {/* ONE form. Every type's picker is rendered up front and revealed by CSS as
         the type <select> changes, so choosing a type costs no round trip.
@@ -131,7 +130,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
           the search, which would otherwise nudge the second row up by 2px. */}
       <div class="flex min-h-[3.65rem] flex-wrap items-end gap-3">
       <label class="text-xs uppercase tracking-wider text-gray-500">
-        Type
+        Tipo
         <select
           name="target_type"
           class="mt-1 block rounded-md border border-line bg-white px-3 py-2 text-sm normal-case tracking-normal text-gray-900"
@@ -147,14 +146,14 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
       </label>
 
       <div data-target-search class="flex-col text-xs uppercase tracking-wider text-gray-500">
-        <label for="nav-target-search">Search</label>
+        <label for="nav-target-search">Buscar</label>
         <div class="mt-1 flex gap-2">
           <input
             id="nav-target-search"
             type="search"
             name="q"
             value={pickerQuery}
-            placeholder="Filter by name"
+            placeholder="Filtrar por nome"
             class="block w-40 rounded-md border border-line px-3 py-2 text-sm normal-case tracking-normal"
           />
           <button
@@ -164,7 +163,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
             hidden={!searchAllNeeded}
             class="rounded-md border border-line px-3 py-2 text-xs uppercase tracking-wider hover:border-brand hover:text-brand"
           >
-            Search all
+            Buscar em tudo
           </button>
         </div>
       </div>
@@ -215,13 +214,13 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
       </label>
 
       <label class="text-xs uppercase tracking-wider text-gray-500">
-        Add to
+        Adicionar a
         <select
           name="location"
           class="mt-1 block rounded-md border border-line bg-white px-3 py-2 text-sm normal-case tracking-normal text-gray-900"
         >
-          <option value="header" selected={pickerLocation === 'header'}>Header</option>
-          <option value="footer" selected={pickerLocation === 'footer'}>Footer</option>
+          <option value="header" selected={pickerLocation === 'header'}>Cabeçalho</option>
+          <option value="footer" selected={pickerLocation === 'footer'}>Rodapé</option>
         </select>
       </label>
 
@@ -234,7 +233,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
         title={nothingToAdd ? 'Nothing matches — clear or widen your search' : undefined}
         class="rounded-md bg-brand px-4 py-2 text-xs font-medium uppercase tracking-wider text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-brand"
       >
-        Add
+        Adicionar
         </button>
       </div>
     </form>
@@ -272,7 +271,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
 
           {menus[loc.key].length === 0 ? (
             <p class="rounded-md border border-dashed border-line py-8 text-center text-sm text-gray-500">
-              No items yet.
+              Nenhum item ainda.
             </p>
           ) : (
             <ul data-menu-list={loc.key} class="divide-y divide-line border-y border-line">
@@ -319,7 +318,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
                           own summary and needs no JavaScript. */}
                       <details class="admin-rename mt-1">
                         <summary class="inline-flex cursor-pointer list-none text-xs text-gray-500 hover:text-brand">
-                          Edit link text
+                          Editar texto do link
                         </summary>
                         <form
                           method="POST"
@@ -332,7 +331,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
                             for={`label-${item.publicId}`}
                             class="block text-[10px] uppercase tracking-wider text-gray-500"
                           >
-                            Link text
+                            Texto do link
                           </label>
                           <div class="mt-1 flex gap-2">
                             <input
@@ -348,7 +347,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
                               type="submit"
                               class="rounded border border-line px-2 py-1 text-xs hover:border-brand hover:text-brand"
                             >
-                              Save
+                              Salvar
                             </button>
                           </div>
                           <p class="mt-1 text-[10px] text-gray-500">
@@ -368,7 +367,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
                         <input type="hidden" name="direction" value="up" />
                         <button
                           type="submit"
-                          aria-label="Move up"
+                          aria-label="Mover para cima"
                           disabled={index === 0}
                           class="px-1 text-gray-400 hover:text-brand disabled:invisible"
                         >
@@ -381,7 +380,7 @@ const locations: { key: MenuLocation; title: string; note: string }[] = [
                         <input type="hidden" name="direction" value="down" />
                         <button
                           type="submit"
-                          aria-label="Move down"
+                          aria-label="Mover para baixo"
                           disabled={index === menus[loc.key].length - 1}
                           class="px-1 text-gray-400 hover:text-brand disabled:invisible"
                         >

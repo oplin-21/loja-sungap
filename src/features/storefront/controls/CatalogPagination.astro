@@ -17,10 +17,10 @@ const linkCls = 'px-3 py-1.5 text-xs uppercase tracking-widest text-muted hover:
 
 {
   model.totalPages > 1 && (
-    <nav class={className} aria-label="Pagination">
+    <nav class={className} aria-label="Paginação">
       {model.prevHref && (
         <a href={model.prevHref} class={linkCls} rel="prev">
-          Prev
+          Anterior
         </a>
       )}
       {model.items.map((item) =>
@@ -38,7 +38,7 @@ const linkCls = 'px-3 py-1.5 text-xs uppercase tracking-widest text-muted hover:
       )}
       {model.nextHref && (
         <a href={model.nextHref} class={linkCls} rel="next">
-          Next
+          Próxima
         </a>
       )}
     </nav>

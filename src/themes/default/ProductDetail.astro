@@ -60,14 +60,14 @@ const { model, purchase } = Astro.props;
     }
 
     <h1 class="font-serif text-4xl tracking-tight">{model.name}</h1>
-    {model.digitalDelivery && <p class="mt-2 text-xs uppercase tracking-widest text-brand">Digital download</p>}
+    {model.digitalDelivery && <p class="mt-2 text-xs uppercase tracking-widest text-brand">Download digital</p>}
     <p
       class="mt-4 text-2xl tabular-nums text-muted"
       data-price-display
       data-base={model.priceCents}
       data-currency={model.currency}
     >
-      {model.priceVaries && <span class="text-base text-faint">from </span>}
+      {model.priceVaries && <span class="text-base text-faint">a partir de </span>}
       {model.formattedPrice}
     </p>
     {
@@ -76,7 +76,7 @@ const { model, purchase } = Astro.props;
          availability without pinning copy. */
       model.lowStock && (
         <p data-low-stock class="mt-2 text-sm text-amber-700">
-          Low stock
+          Últimas unidades
         </p>
       )
     }
@@ -113,7 +113,7 @@ const { model, purchase } = Astro.props;
         <line x1="8.6" y1="13.5" x2="15.4" y2="17.5" />
         <line x1="15.4" y1="6.5" x2="8.6" y2="10.5" />
       </svg>
-      <span data-share-label>Share</span>
+      <span data-share-label>Compartilhar</span>
     </button>
   </div>
 </div>
@@ -121,7 +121,7 @@ const { model, purchase } = Astro.props;
 {
   model.related.length > 0 && (
     <section class="mt-20 border-t border-line pt-12">
-      <h2 class="mb-8 text-xs uppercase tracking-[0.25em] text-faint">You may also like</h2>
+      <h2 class="mb-8 text-xs uppercase tracking-[0.25em] text-faint">Você também pode gostar</h2>
       <ul class="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
         {model.related.map((card, i) => (
           <ProductCard card={card} index={i} headingLevel="h3" />

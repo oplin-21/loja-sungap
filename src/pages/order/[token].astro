@@ -58,10 +58,10 @@ const shopHref = catalogPath(Astro.locals.settings?.homePage);
   {
     order ? (
       <Fragment>
-        <h1 class="mb-2 font-serif text-3xl tracking-tight sm:text-4xl">Thank you! Your order is confirmed.</h1>
+        <h1 class="mb-2 font-serif text-3xl tracking-tight sm:text-4xl">Obrigado! Seu pedido está confirmado.</h1>
         <p class="mb-6 text-sm text-muted">
-          Order #{orderRef}
-          {order.email && <Fragment> · a receipt is on its way to {order.email}</Fragment>}
+          Pedido nº{orderRef}
+          {order.email && <Fragment> · o comprovante está a caminho de {order.email}</Fragment>}
         </p>
 
         <div class="overflow-hidden rounded-lg border border-line bg-surface">
@@ -69,7 +69,7 @@ const shopHref = catalogPath(Astro.locals.settings?.homePage);
             <thead class="bg-surface text-muted">
               <tr>
                 <th class="px-4 py-2 font-medium">Item</th>
-                <th class="px-4 py-2 font-medium">Qty</th>
+                <th class="px-4 py-2 font-medium">Qtd</th>
                 <th class="px-4 py-2 font-medium">Total</th>
               </tr>
             </thead>
@@ -104,12 +104,12 @@ const shopHref = catalogPath(Astro.locals.settings?.homePage);
                     )}
                   </span>
                   {order.refunded_cents >= order.amount_total_cents ? (
-                    <span class="text-sm text-muted">Unavailable after refund</span>
+                    <span class="text-sm text-muted">Indisponível após reembolso</span>
                   ) : (
                     <a
                       href={`/order/${token}/download/${item.public_id}`}
                       class="rounded-md bg-brand px-4 py-2 text-sm font-medium text-on-brand hover:bg-brand-hover"
-                    >Download</a>
+                    >Baixar</a>
                   )}
                 </li>
               ))}
@@ -117,7 +117,7 @@ const shopHref = catalogPath(Astro.locals.settings?.homePage);
           </section>
         )}
         {paymentLabel && (
-          <p class="mt-1 text-sm text-muted">Paid with {paymentLabel}</p>
+          <p class="mt-1 text-sm text-muted">Pago com {paymentLabel}</p>
         )}
         {/* Amounts only — the internal note is for the merchant, not the buyer. */}
         {order.refunded_cents > 0 && (
@@ -138,10 +138,9 @@ const shopHref = catalogPath(Astro.locals.settings?.homePage);
       <Fragment>
         {/* Order not recorded yet — poll until the webhook lands (no JS). */}
         <meta http-equiv="refresh" content="3" />
-        <h1 class="mb-2 font-serif text-3xl tracking-tight sm:text-4xl">Confirming your order…</h1>
+        <h1 class="mb-2 font-serif text-3xl tracking-tight sm:text-4xl">Confirmando seu pedido…</h1>
         <p class="text-muted">
-          Your payment went through and we're recording your order. This page
-          refreshes automatically — it usually takes just a few seconds.
+          Seu pagamento foi aprovado e estamos registrando seu pedido. Esta página atualiza sozinha — costuma levar poucos segundos.
         </p>
       </Fragment>
     )

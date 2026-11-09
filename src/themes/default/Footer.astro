@@ -22,7 +22,7 @@ const { model } = Astro.props;
     <span>&copy; {model.storeName}</span>
     {
       model.footerLinks.length > 0 && (
-        <nav aria-label="Footer" class="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <nav aria-label="Rodapé" class="flex flex-wrap items-center gap-x-6 gap-y-3">
           {model.footerLinks.map((link) => (
             <a href={link.href} class="hover:text-brand">
               {link.text}
