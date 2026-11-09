@@ -111,7 +111,7 @@ const listError = Astro.url.searchParams.get('error');
     inventoryExceptions.length > 0 && (
       <section id="inventory-exceptions" class="mb-8 rounded-lg border border-red-300 bg-red-50 px-5 py-4">
         <h2 class="text-sm font-medium text-red-900">{inventoryExceptions.length} inventory exception{inventoryExceptions.length === 1 ? '' : 's'} need attention</h2>
-        <p class="mt-1 text-xs text-red-800">These paid orders arrived after their stock holds ended. Open each order to reconcile the oversold quantity.</p>
+        <p class="mt-1 text-xs text-red-800">Estes pedidos pagos chegaram depois do fim da reserva de estoque. Abra cada um e acerte a quantidade vendida a mais.</p>
         <ul class="mt-3 space-y-2 text-sm text-red-900">
           {inventoryExceptions.map((entry) => (
             <li>
@@ -139,8 +139,7 @@ const listError = Astro.url.searchParams.get('error');
           {unmatched.length} refund{unmatched.length === 1 ? '' : 's'} need{unmatched.length === 1 ? 's' : ''} attention
         </h2>
         <p class="mt-1 text-xs text-amber-800">
-          Your payment provider reported these refunds but they could not be applied. Nothing was
-          counted against your revenue yet.
+          O provedor de pagamento informou estes reembolsos, mas eles não puderam ser aplicados. Nada foi descontado da receita ainda.
         </p>
         <ul class="mt-3 space-y-2">
           {unmatched.map((e) => (
@@ -157,7 +156,7 @@ const listError = Astro.url.searchParams.get('error');
               {e.order_id && conflictOrders.get(e.order_id) ? (
                 <Fragment>
                   <span>
-                    Conflicts with{' '}
+                    Conflita com{' '}
                     <a
                       href={`/admin/orders/${conflictOrders.get(e.order_id)!.public_id}`}
                       class="underline"
@@ -183,7 +182,7 @@ const listError = Astro.url.searchParams.get('error');
                 </Fragment>
               ) : (
                 <Fragment>
-                  <span>No order records this payment</span>
+                  <span>Nenhum pedido registra este pagamento</span>
                   <form method="POST" action="/api/admin/refunds">
                     <input type="hidden" name="_action" value="retry_refund_event" />
                     <input type="hidden" name="event_id" value={e.provider_event_id} />

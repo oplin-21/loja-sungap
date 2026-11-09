@@ -158,9 +158,8 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
           Astro.locals.settings && paymentsInDemoMode(Astro.locals.settings) && (
             <div class="mb-6 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
               <strong class="font-semibold">Nenhuma forma de pagamento real configurada.</strong> Só{' '}
-              <strong>Pagamento de demonstração</strong> can take orders right now — they're recorded and tagged{' '}
-              <code class="rounded bg-amber-100 px-1 text-xs">demo</code>. Shoppers see setup links
-              for Card &amp; Lightning until you add a key. Demo stays available alongside real rails.
+              <strong>Pagamento de demonstração</strong> pode receber pedidos agora — eles ficam registrados e marcados como{' '}
+              <code class="rounded bg-amber-100 px-1 text-xs">demo</code>. Os clientes veem avisos de configuração até você cadastrar uma chave. A demonstração continua disponível.
             </div>
           )
         }
@@ -171,7 +170,7 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
               class="mb-6 flex items-center justify-between gap-3 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800 transition hover:border-red-500"
             >
               <span>
-                <strong class="font-semibold">Shipping checkout is blocked by invalid configuration:</strong>{' '}
+                <strong class="font-semibold">A finalização com frete está bloqueada por configuração inválida:</strong>{' '}
                 {shippingIssue.reason}
               </span>
               <span aria-hidden="true">&rarr;</span>
@@ -186,7 +185,7 @@ const currentLabel = nav.find((n) => n.key === active)?.label ?? 'Menu';
             >
               <span>
                 <strong class="font-semibold">O estoque precisa de atenção.</strong>{' '}
-                {inventoryExceptionCount} paid order line{inventoryExceptionCount === 1 ? '' : 's'} arrived after its stock hold ended and could not be fully deducted. Open the affected orders and reconcile stock.
+                {inventoryExceptionCount} paid order line{inventoryExceptionCount === 1 ? '' : 's'} chegou depois do fim da reserva de estoque e não pôde ser baixado por completo. Abra os pedidos afetados e acerte o estoque.
               </span>
               <span aria-hidden="true">&rarr;</span>
             </a>
