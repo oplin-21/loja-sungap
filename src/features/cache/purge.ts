@@ -1,8 +1,19 @@
-import { cache } from 'cloudflare:workers';
+import { cache, env } from 'cloudflare:workers';
 import { normalizeCacheTags, productCacheTags } from './tags';
 
 export interface CachePurger {
   purge(options: CachePurgeOptions): Promise<CachePurgeResult>;
+}
+
+/**
+ * Workers Caching is only enabled on an instance with a single canonical
+ * hostname (CANONICAL_ORIGIN set). Without it nothing is cached, so purging
+ * the default cache is a no-op instead of an error.
+ */
+function sharedCacheDisabled(purger: CachePurger): boolean {
+  if (purger !== cache) return false;
+  const origin = (env as unknown as Record<string, unknown>).CANONICAL_ORIGIN;
+  return typeof origin !== 'string' || origin.length === 0;
 }
 
 function purgeFailure(
@@ -29,6 +40,7 @@ export async function purgeCacheTags(
 ): Promise<void> {
   const normalized = normalizeCacheTags(tags);
   if (normalized.length === 0) return;
+  if (sharedCacheDisabled(purger)) return;
 
   try {
     const result = await purger.purge({ tags: normalized });
@@ -60,6 +72,7 @@ export function purgeProductCache(
 export async function purgeEntireCache(
   purger: CachePurger = cache,
 ): Promise<void> {
+  if (sharedCacheDisabled(purger)) return;
   try {
     const result = await purger.purge({ purgeEverything: true });
     if (result.success) return;
@@ -81,6 +94,7 @@ export async function purgeStockProductCache(
 ): Promise<void> {
   const tags = productCacheTags(productPublicIds);
   if (tags.length === 0) return;
+  if (sharedCacheDisabled(purger)) return;
 
   try {
     const result = await purger.purge({ tags });
