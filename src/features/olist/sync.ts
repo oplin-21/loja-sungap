@@ -347,7 +347,27 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
       )
       .bind(productId, ...ids)
       .run();
+    // Preço da vitrine = menor preço entre as cores (evita card com um preço e página com outro).
+    await db
+      .prepare(
+        `UPDATE products SET price_cents = COALESCE((SELECT MIN(price_cents) FROM product_variants
+            WHERE product_id = ? AND active = 1 AND price_cents > 0), price_cents) WHERE id = ?`,
+      )
+      .bind(productId, productId)
+      .run();
   }
+}
+
+/** Fotos de cor que ficaram para depois (teto de 12 por vez): um produto por rodada. */
+async function fotosPendentes(db: D1Database, bucket: R2Bucket): Promise<void> {
+  const p = await db
+    .prepare(
+      `SELECT v.product_id AS id FROM product_variants v
+         JOIN olist_var_imagens vi ON vi.olist_id = v.olist_id AND vi.pos = 0
+        WHERE v.active = 1 AND v.image_id IS NULL LIMIT 1`,
+    )
+    .first<{ id: number }>();
+  if (p) await fotosDasVariacoes(db, bucket, p.id);
 }
 
 /**
@@ -483,6 +503,7 @@ export async function rodadaOlist(
       // toda rodada também confere estoque (os ainda não conferidos vêm primeiro).
       await estoque(db, token);
     } else await estoque(db, token);
+    await fotosPendentes(db, bucket);
     if (e.fase !== 'detalhar') e.ultimo_erro = null;
   } catch (err) {
     e.ultimo_erro = (err as Error).message.slice(0, 300);
