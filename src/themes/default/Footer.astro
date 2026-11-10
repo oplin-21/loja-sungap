@@ -15,21 +15,27 @@ interface Props {
 const { model } = Astro.props;
 ---
 
-<footer class="border-t border-line">
-  <div
-    class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-6 py-10 text-xs uppercase tracking-widest text-muted"
-  >
-    <span>&copy; {model.storeName}</span>
-    {
-      model.footerLinks.length > 0 && (
-        <nav aria-label="Rodapé" class="flex flex-wrap items-center gap-x-6 gap-y-3">
-          {model.footerLinks.map((link) => (
-            <a href={link.href} class="hover:text-brand">
-              {link.text}
-            </a>
-          ))}
-        </nav>
-      )
-    }
+<footer class="border-t border-line bg-surface">
+  <div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 text-sm text-muted md:flex-row md:items-center md:justify-between">
+    <div class="flex flex-col gap-3">
+      <span class="text-xs uppercase tracking-widest">&copy; {new Date().getFullYear()} {model.storeName}</span>
+      {
+        model.footerLinks.length > 0 && (
+          <nav aria-label="Rodapé" class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs uppercase tracking-widest">
+            {model.footerLinks.map((link) => (
+              <a href={link.href} class="hover:text-brand">
+                {link.text}
+              </a>
+            ))}
+          </nav>
+        )
+      }
+      {/* Dados da empresa vendedora (W66 — CNPJ conforme registro do grupo). */}
+      <span class="text-xs">CNPJ 29.640.033/0001-88</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-xs uppercase tracking-widest text-faint">Uma empresa</span>
+      <img src="/marca/logo-oplin.webp" alt="Grupo Oplin" width="120" height="40" loading="lazy" class="h-9 w-auto" />
+    </div>
   </div>
 </footer>
