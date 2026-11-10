@@ -332,6 +332,11 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
   }
   await fotosDasVariacoes(db, bucket, productId);
   await categoriaPeloNome(db, productId, nome);
+  // Produto sem cores: marca como "estoque ainda não conferido" para entrar
+  // primeiro na próxima conferência (senão espera a fila toda como esgotado).
+  if (!variacoes.length) {
+    await db.prepare('UPDATE products SET olist_synced_at = NULL WHERE id = ?').bind(productId).run();
+  }
   // Variação que sumiu do Olist sai da vitrine.
   if (variacoes.length) {
     const ids = variacoes.map((x) => String(x.variacao.id));
