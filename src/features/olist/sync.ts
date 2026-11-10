@@ -331,6 +331,7 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
     }
   }
   await fotosDasVariacoes(db, bucket, productId);
+  await categoriaPeloNome(db, productId, nome);
   // Variação que sumiu do Olist sai da vitrine.
   if (variacoes.length) {
     const ids = variacoes.map((x) => String(x.variacao.id));
@@ -340,6 +341,30 @@ async function gravarProduto(db: D1Database, bucket: R2Bucket, p: Record<string,
            AND olist_id NOT IN (${ids.map(() => '?').join(',')})`,
       )
       .bind(productId, ...ids)
+      .run();
+  }
+}
+
+/**
+ * Categoria pelo nome (regras em settings.olist_categorias): "Cadeira" → Cadeiras
+ * de Praia etc. Só acrescenta; categoria posta à mão no admin nunca é tirada.
+ */
+async function categoriaPeloNome(db: D1Database, productId: number, nome: string): Promise<void> {
+  const bruto = (await db.prepare("SELECT value FROM settings WHERE key = 'olist_categorias'").first<{ value: string }>())?.value;
+  if (!bruto) return;
+  let regras: { palavra?: string; categoria?: string }[] = [];
+  try {
+    regras = JSON.parse(bruto);
+  } catch {
+    return;
+  }
+  const alvo = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  for (const r of regras) {
+    const palavra = String(r.palavra ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    if (!palavra || !r.categoria || !alvo.includes(palavra)) continue;
+    await db
+      .prepare('INSERT OR IGNORE INTO product_categories (product_id, category_id) SELECT ?, id FROM categories WHERE slug = ?')
+      .bind(productId, r.categoria)
       .run();
   }
 }
