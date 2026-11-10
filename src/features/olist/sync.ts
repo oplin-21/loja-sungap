@@ -17,7 +17,7 @@ import { htmlParaMarkdown, numeroOuNulo, reaisParaCentavos, rotuloGrade, slugify
 const API = 'https://api.tiny.com.br/api2';
 const LISTAR_PAGINAS_POR_RODADA = 4;
 const DETALHAR_POR_RODADA = 8;
-const ESTOQUE_POR_RODADA = 15;
+const ESTOQUE_POR_RODADA = 30;
 const RELISTAR_HORAS = 24;
 const MAX_IMAGENS = 6;
 
@@ -472,8 +472,12 @@ export async function rodadaOlist(
     // Sem marca configurada, a loja só traz o que o Olist enviar (modelo Nuvemshop).
     else if (!marca && e.fase === 'listar') e.fase = 'estoque';
     if (e.fase === 'listar') await listar(db, token, e);
-    else if (e.fase === 'detalhar') await detalhar(db, bucket, token, marca, currency, e);
-    else await estoque(db, token);
+    else if (e.fase === 'detalhar') {
+      await detalhar(db, bucket, token, marca, currency, e);
+      // Produto recém-chegado não pode ficar "esgotado" esperando a vez do estoque:
+      // toda rodada também confere estoque (os ainda não conferidos vêm primeiro).
+      await estoque(db, token);
+    } else await estoque(db, token);
     if (e.fase !== 'detalhar') e.ultimo_erro = null;
   } catch (err) {
     e.ultimo_erro = (err as Error).message.slice(0, 300);
